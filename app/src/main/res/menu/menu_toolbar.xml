@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/musicIcon"
+        android:icon="@mipmap/ic_queue_music_white_36dp"
+        app:showAsAction="ifRoom"
+        android:title="musicIcon" />
+    <item
+        android:id="@+id/searchIcon"
+        android:title="search"
+        android:icon="@mipmap/ic_search_white_36dp"
+        app:showAsAction="ifRoom"
+        />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:title="@string/action_settings"
+        app:showAsAction="never" />
+
+
+
+</menu>
