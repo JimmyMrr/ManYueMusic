@@ -1,9 +1,7 @@
 package com.example.ritchie_huang.manyuemusic.Activity;
 
-import android.content.Intent;
-import android.support.design.widget.TabLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -18,8 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.Window;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.example.ritchie_huang.manyuemusic.Fragment.PersonalRecommendFrag;
+import com.example.ritchie_huang.manyuemusic.Fragment.SongListFrag;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Util.PersistentCookieStore;
 import com.squareup.okhttp.OkHttpClient;
@@ -29,8 +31,12 @@ import java.net.CookiePolicy;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class HomeActivity extends AppCompatActivity {
 
+    private PersonalRecommendFrag personalRecommendFrag;
+    private SongListFrag songListFrag;
+    private FrameLayout frameLayout;
     private List<Fragment> fragmentList;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -41,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_home);
 
         client = new OkHttpClient();
@@ -48,7 +55,13 @@ public class HomeActivity extends AppCompatActivity {
                 new PersistentCookieStore(getApplicationContext()),
                 CookiePolicy.ACCEPT_ALL));
 
+
         fragmentList = new ArrayList<>();
+        frameLayout = (FrameLayout) findViewById(R.id.fragment_container);
+        personalRecommendFrag = new PersonalRecommendFrag();
+        songListFrag = new SongListFrag();
+        fragmentList.add(personalRecommendFrag);
+        fragmentList.add(songListFrag);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("漫悦音乐");
         toolbar.inflateMenu(R.menu.menu_toolbar);
@@ -56,12 +69,14 @@ public class HomeActivity extends AppCompatActivity {
 
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        frameLayout = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.fram,null);
+        mViewPager = (ViewPager) frameLayout.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setCurrentItem(0);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+//
+//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+//        tabLayout.setupWithViewPager(mViewPager);
 
     }
 
@@ -81,8 +96,13 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.searchIcon) {
-            Intent intent = new Intent(HomeActivity.this, SearchMusicActivity.class);
-            startActivity(intent);
+            return true;
+
+        }
+        if (id == R.id.musicIcon) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.fragment_container,fragmentList.get(1)).commit();
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -105,17 +125,6 @@ public class HomeActivity extends AppCompatActivity {
             return fragmentList.size();
         }
 
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "个性推荐";
-                case 1:
-                    return "歌单";
-                case 2:
-                    return "排行榜";
-            }
-            return null;
-        }
+
     }
 }
