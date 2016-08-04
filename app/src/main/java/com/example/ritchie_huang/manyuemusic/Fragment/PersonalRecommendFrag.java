@@ -96,4 +96,10 @@ public class PersonalRecommendFrag extends Fragment {
         super.onResume();
         convenientBanner.startTurning(3000);
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        convenientBanner.stopTurning();
+    }
 }

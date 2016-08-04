@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
+
 
     <ImageView
         android:id="@+id/albumArt"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@color/background" />
+        android:src="@mipmap/lrc" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#70000000" />
+        android:background="#00010101" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/green">
+
+    </android.support.v7.widget.Toolbar>
 
     <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -25,14 +33,15 @@
 
         <FrameLayout
             android:id="@+id/headerView"
+            app:layout_heightPercent="65%"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="?attr/actionBarSize"
-            app:layout_heightPercent="70%">
+            android:layout_marginTop="?attr/actionBarSize">
+
             <ScrollView
                 android:id="@+id/lrcScrollView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
 
                 <TextView
@@ -40,19 +49,20 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="好歌不容错过"
-                    android:textColor="@color/whaite_text"
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/yellow" />
             </ScrollView>
 
 
         </FrameLayout>
 
         <LinearLayout
+            android:background="@color/green"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/headerView"
             android:layout_gravity="center_horizontal|center_vertical"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:gravity="center_horizontal|center_vertical"
             android:orientation="vertical">
 
@@ -73,8 +83,8 @@
                     android:gravity="right"
                     android:singleLine="true"
                     android:text="00:00"
-                    android:textSize="10sp"
                     android:textColor="@color/whaite_text"
+                    android:textSize="10sp"
 
                     />
 
@@ -93,8 +103,8 @@
                     android:layout_weight="1"
                     android:singleLine="true"
                     android:text="00:00"
-                    android:textSize="10sp"
                     android:textColor="@color/whaite_text"
+                    android:textSize="10sp"
 
                     />
             </LinearLayout>

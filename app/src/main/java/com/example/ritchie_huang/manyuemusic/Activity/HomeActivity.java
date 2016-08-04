@@ -66,7 +66,8 @@ public class HomeActivity extends AppCompatActivity {
         frameLayout = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.fram,null);
         mViewPager = (ViewPager) frameLayout.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setCurrentItem(1);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.fragment_container,fragmentList.get(0)).commit();
 
 
 
@@ -88,12 +89,17 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.searchIcon) {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.hide(fragmentList.get(0)).commit();
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            transaction.replace(R.id.fragment_container, fragmentList.get(1)).commit();
+
             return true;
 
         }
         if (id == R.id.musicIcon) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.fragment_container,fragmentList.get(1)).commit();
+            transaction.show(fragmentList.get(0)).commit();
             return true;
         }
 
