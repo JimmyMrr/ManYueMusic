@@ -15,13 +15,13 @@ import java.io.IOException;
 /**
  * Created by ritchie-huang on 16-8-2.
  */
-public class OkPOST extends Thread {
+public class HttpUtil extends Thread {
     private OkHttpClient client;
     private Handler handler;
     private RequestBody formbody;
     private String url;
 
-    public OkPOST(OkHttpClient client, String url, RequestBody formbody, Handler handler) {
+    public HttpUtil(OkHttpClient client, String url, RequestBody formbody, Handler handler) {
         this.client = client;
         this.url = url;
         this.formbody = formbody;
@@ -38,6 +38,7 @@ public class OkPOST extends Thread {
         Request request = new Request.Builder()
                 .url(url)
                 .post(formbody)
+                .addHeader("Cookie","appver=1.5.0.75771")
                 .build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {

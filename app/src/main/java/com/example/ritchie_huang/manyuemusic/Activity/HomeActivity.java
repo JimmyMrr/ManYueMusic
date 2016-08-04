@@ -13,15 +13,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 
 import android.view.Window;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.example.ritchie_huang.manyuemusic.Fragment.PersonalRecommendFrag;
-import com.example.ritchie_huang.manyuemusic.Fragment.SongListFrag;
+import com.example.ritchie_huang.manyuemusic.Fragment.HomeFrag;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Util.PersistentCookieStore;
 import com.squareup.okhttp.OkHttpClient;
@@ -34,8 +31,7 @@ import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    private PersonalRecommendFrag personalRecommendFrag;
-    private SongListFrag songListFrag;
+    private HomeFrag homeFrag;
     private FrameLayout frameLayout;
     private List<Fragment> fragmentList;
     private SectionsPagerAdapter mSectionsPagerAdapter;
@@ -58,10 +54,8 @@ public class HomeActivity extends AppCompatActivity {
 
         fragmentList = new ArrayList<>();
         frameLayout = (FrameLayout) findViewById(R.id.fragment_container);
-        personalRecommendFrag = new PersonalRecommendFrag();
-        songListFrag = new SongListFrag();
-        fragmentList.add(personalRecommendFrag);
-        fragmentList.add(songListFrag);
+        homeFrag = new HomeFrag();
+        fragmentList.add(homeFrag);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("漫悦音乐");
         toolbar.inflateMenu(R.menu.menu_toolbar);
@@ -72,11 +66,9 @@ public class HomeActivity extends AppCompatActivity {
         frameLayout = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.fram,null);
         mViewPager = (ViewPager) frameLayout.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setCurrentItem(0);
+        mViewPager.setCurrentItem(1);
 
-//
-//        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-//        tabLayout.setupWithViewPager(mViewPager);
+
 
     }
 

@@ -19,12 +19,10 @@ import java.util.List;
 /**
  * Created by ritchie-huang on 16-8-3.
  */
-public class SongListFrag extends Fragment {
+public class HomeFrag extends Fragment {
 
     private List<Fragment> fragmentList;
     private ViewPager viewPager;
-
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,7 +32,7 @@ public class SongListFrag extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_withtab,container,false);
+        View view = inflater.inflate(R.layout.frag_home, container, false);
         init(view);
 
         return view;
@@ -42,16 +40,19 @@ public class SongListFrag extends Fragment {
 
     private void init(View view) {
         fragmentList = new ArrayList<>();
-        PersonalRecommendFrag frag = new PersonalRecommendFrag();
-        fragmentList.add(frag);
-
+        PersonalRecommendFrag personalRecommendFrag = new PersonalRecommendFrag();
+        SongsFrag songsFrag = new SongsFrag();
+        fragmentList.add(personalRecommendFrag);
+        fragmentList.add(songsFrag);
         viewPager = (ViewPager) view.findViewById(R.id.container);
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getFragmentManager());
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.tabs);
+        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.red));
         tabLayout.setupWithViewPager(viewPager);
+
 
     }
 
@@ -85,4 +86,6 @@ public class SongListFrag extends Fragment {
             return null;
         }
     }
+
+
 }

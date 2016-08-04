@@ -1,5 +1,7 @@
 package com.example.ritchie_huang.manyuemusic.Fragment;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,28 +13,35 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bigkoo.convenientbanner.ConvenientBanner;
+import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
+import com.bigkoo.convenientbanner.holder.Holder;
 import com.example.ritchie_huang.manyuemusic.Activity.HomeActivity;
+import com.example.ritchie_huang.manyuemusic.DataItem.BannerItem;
 import com.example.ritchie_huang.manyuemusic.R;
-import com.example.ritchie_huang.manyuemusic.Util.Constants;
-import com.squareup.okhttp.Call;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
+import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.GZIPInputStream;
+import com.squareup.okhttp.OkHttpClient;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ritchie-huang on 16-8-2.
  */
 public class PersonalRecommendFrag extends Fragment {
-    private OkHttpClient client = HomeActivity.client;
-    private TextView textView;
+    private ConvenientBanner<BannerItem> convenientBanner;
+    private String[] images = {"http://img2.imgtn.bdimg.com/it/u=3093785514,1341050958&fm=21&gp=0.jpg",
+            "http://img2.3lian.com/2014/f2/37/d/40.jpg",
+            "http://d.3987.com/sqmy_131219/001.jpg",
+            "http://img2.3lian.com/2014/f2/37/d/39.jpg",
+            "http://www.8kmm.com/UploadFiles/2012/8/201208140920132659.jpg",
+            "http://f.hiphotos.baidu.com/image/h%3D200/sign=1478eb74d5a20cf45990f9df460b4b0c/d058ccbf6c81800a5422e5fdb43533fa838b4779.jpg",
+            "http://f.hiphotos.baidu.com/image/pic/item/09fa513d269759ee50f1971ab6fb43166c22dfba.jpg"
+    };
+    private List<BannerItem> list = new ArrayList<>();
+
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,74 +52,48 @@ public class PersonalRecommendFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_personal_recommand, container, false);
         init(view);
-//        getInfoFromUrl();
         return view;
     }
 
     private void init(View view) {
-        textView = (TextView) view.findViewById(R.id.text);
-
-    }
-
-    private void getInfoFromUrl(){
-        RequestBody formbody = new FormEncodingBuilder()
-                .add("params", "0BD8BB39A78692F1744DEFF63EBC30F7889FA0D28FD18C56783C7BF3AADA4C516E269DCEF72717031B0D0797563D21D74A80931032E90A0DBF772B7B86DAB7B29C47227066BA6859EF81B2BDC94960501592EFDBED2FA4BB612DD34C3BE69C1CB997189A2D14BE23FACD2D81694F87D7D86DD3F48F213C035A89EDEE2F6336478BEBA964633B3DB2A074EA2662FE8AEC18A167403EA0D465ED99F6E0BF1B58D64E2F6FAB87BFB382901FB3F8D753ABABE5361DD03E8767F3CC5BE299EDCBF8CEA82126579A7E11CD9A6B7A95AEB41CEC237356031206C2C94443360BB430F44D4CE1F78FE98FDF4468B40977A33CD3A7AD9A9F926C5E1B3979139277DBCDF27E7EB4BFC0C4996CD069835883475527C7D296034459225E90FC0FD45F259EDAD79318B200CCC01B51E4571EFD93F7E7EFE09D1169A86936C7C3D1E0EAAFE6955D2A72808C6F340B4388E57F4443C22DCB267E6BA157E3256F2924B9A2DD0B1F4C001E848DC9F85F05DE82FCCA50763549329EF9DF1BC9746B9CFB7308D72159C5A5DC242B76960F7E62827FD52B8F4BCF7A667EBDAD93E5D34CB68D92ECBCD7FEE9265DD359457ED508F38B088041E5BBFDB949F891FA490B48B24C2C754762F31DC4C0F0C8E3930D08A628D82D10C6CADDEA0BBDF8D9FF405C9FE9B2E5622BD99757F50109BF2BBE0B6804606EB5EF23E3D772D023013244905739680AC5801E039D02D768DDB47BE085BE698DFA91C29B13F34AFEC3DA8E69251F8EB21D1A11B85F89B6383089FEF4713C1C21972D09E2433FEDADBAB3B6ED239935E06E76AACA3A66B3F11E51EFD0F5AD0CE6A32783")
-                .build();
-        Request request = new Request.Builder()
-                .url("http://music.163.com/eapi/batch")
-                .post(formbody)
-                .addHeader("Accept", "*/*")
-                .addHeader("Accept-Encoding", "gzip,deflate,sdch")
-                .addHeader("Accept-Language", "zh-CN,zh;q=0.8,gl;q=0.6,zh-TW;q=0.4")
-                .addHeader("Connection", "keep-alive")
-                .addHeader("Host", "music.163.com")
-                .addHeader("Referer", "http://music.163.com/search/")
-                .addHeader("Cookie", "appver=1.5.2")
-                .build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                handler.sendEmptyMessage(Constants.OKHTTP_CALL_FAIL);
-
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                Message message = Message.obtain();
-                message.what = Constants.OKHTTP_CALL_SUCCESS;
-                message.obj = response.body().byteStream();
-                handler.sendMessage(message);
-            }
-        });
-    }
-
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case Constants.OKHTTP_CALL_FAIL:
-                    Toast.makeText(getContext(), "请求出错", Toast.LENGTH_SHORT).show();
-                    break;
-                case Constants.OKHTTP_CALL_SUCCESS:
-                    GZIPInputStream gzipInputStream = null;
-                    try {
-                        gzipInputStream = new GZIPInputStream((InputStream) msg.obj);
-                        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-                        int length = -1;
-
-                        byte[] cache = new byte[1024];
-
-                        while ((length = gzipInputStream.read(cache)) != -1) {
-                            byteArrayOutputStream.write(cache, 0, length);
-                        }
-
-                        textView.setText(new String(byteArrayOutputStream.toByteArray()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    break;
-            }
+        convenientBanner = (ConvenientBanner<BannerItem>) view.findViewById(R.id.convenientBanner);
+        for (String imag : images) {
+            BannerItem bannerItem = new BannerItem();
+            bannerItem.setBanner_image_url(imag);
+            list.add(bannerItem);
         }
-    };
+        convenientBanner.setPages(new CBViewHolderCreator<NetworkImageHolderView>() {
+
+            @Override
+            public NetworkImageHolderView createHolder() {
+                return new NetworkImageHolderView();
+            }
+        }, list)
+                .setPageIndicator(new int[]{R.mipmap.ic_radio_button_unchecked_white_24dp, R.mipmap.ic_radio_button_checked_white_24dp})
+                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL);
+    }
+
+
+    private class NetworkImageHolderView implements Holder<BannerItem> {
+
+        private View view;
+
+        @Override
+        public View createView(Context context) {
+            view = LayoutInflater.from(context).inflate(R.layout.banner_item, null, false);
+            return view;
+        }
+
+        @Override
+        public void UpdateUI(Context context, int position, BannerItem data) {
+            ((SimpleDraweeView) view.findViewById(R.id.banner_image)).setImageURI(Uri.parse(data.getBanner_image_url()));
+
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        convenientBanner.startTurning(3000);
+    }
 }
