@@ -25,7 +25,26 @@
             android:layout_toRightOf="@+id/t1" />
 
 
+
     </RelativeLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:text="百度音乐歌单"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:text="网易云音乐歌单"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
         android:background="@color/white"

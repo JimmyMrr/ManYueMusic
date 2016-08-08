@@ -7,7 +7,7 @@ public class Api {
 
 
     //get请求
-    public static String GEDAN = "http://music.163.com/api/playlist/list?cat=全部&order=hot&offset=0&total=true&limit=500";
+    public static String GEDAN = "http://music.163.com/api/playlist/list?cat=全部&order=hot&offset=0&total=true&limit=2000";
     //http://music.163.com/api/playlist/detail?id=xxx;
     public static String GEDAN_DETAIL = "http://music.163.com/api/playlist/detail?id=";
     //http://music.163.com/api/song/detail/?id=xxx&ids=[xxx];

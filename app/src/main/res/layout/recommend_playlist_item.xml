@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="110dp"
     android:layout_height="150dp"
+
     android:layout_marginTop="6dp">
     <FrameLayout
         android:layout_alignParentTop="true"

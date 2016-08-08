@@ -13,8 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ritchie_huang.manyuemusic.DataItem.GedanHotItem;
-import com.example.ritchie_huang.manyuemusic.DataItem.GedanListItem;
+import com.example.ritchie_huang.manyuemusic.DataItem.GedanListNeteaseItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -29,17 +28,17 @@ import java.util.List;
 /**
  * Created by ritchie-huang on 16-8-6.
  */
-public class AllGedanListAdapter extends RecyclerView.Adapter<AllGedanListAdapter.ItemViewHolder> {
+public class AllGedanFromNeteaseListAdapter extends RecyclerView.Adapter<AllGedanFromNeteaseListAdapter.ItemViewHolder> {
     private Context mContext;
-    private List<GedanListItem> gedanListItemList;
+    private List<GedanListNeteaseItem> gedanListItemListNetease;
     SpannableString spanString;
 
-    int width = 150,height = 150;
+    int width = 140,height = 140;
 
 
-    public AllGedanListAdapter(Context mContext, List<GedanListItem> gedanListItemList) {
+    public AllGedanFromNeteaseListAdapter(Context mContext, List<GedanListNeteaseItem> gedanListItemListNetease) {
         this.mContext = mContext;
-        this.gedanListItemList = gedanListItemList;
+        this.gedanListItemListNetease = gedanListItemListNetease;
 
         Bitmap b = BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.index_icn_earphone);
         ImageSpan imgSpan = new ImageSpan(mContext, b, ImageSpan.ALIGN_BASELINE);
@@ -60,8 +59,8 @@ public class AllGedanListAdapter extends RecyclerView.Adapter<AllGedanListAdapte
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        final GedanListItem item = gedanListItemList.get(position);
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getCoverImgUrl()))
+        final GedanListNeteaseItem item = gedanListItemListNetease.get(position);
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getCoverImgUrl()+"?param=140y140"))
                 .setResizeOptions(new ResizeOptions(width, height))
                 .build();
 
@@ -92,13 +91,13 @@ public class AllGedanListAdapter extends RecyclerView.Adapter<AllGedanListAdapte
 
     }
 
-    public void update(ArrayList<GedanListItem> list){
-        this.gedanListItemList = list;
+    public void update(ArrayList<GedanListNeteaseItem> list){
+        this.gedanListItemListNetease = list;
         notifyDataSetChanged();
     }
     @Override
     public int getItemCount() {
-        return gedanListItemList.size();
+        return gedanListItemListNetease.size();
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {

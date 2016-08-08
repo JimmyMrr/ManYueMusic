@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by ritchie-huang on 16-8-6.
  */
-public class GedanListItem {
+public class GedanListNeteaseItem {
 
     /**
      * playlists : [{"subscribers":[],"subscribed":false,"creator":{"userId":64631536,"nickname":"时光如水你好","avatarUrl":"http://p4.music.126.net/rhzpxazsxaAXWWMk6lw-gQ==/1364493959369212.jpg","expertTags":["流行","华语","欧美"],"remarkName":null,"mutual":false,"defaultAvatar":false,"gender":2,"birthday":800985600000,"city":1002900,"backgroundImgId":1406275375761547,"avatarImgId":1364493959369212,"province":1000000,"vipType":0,"userType":0,"description":"","followed":false,"backgroundUrl":"http://p1.music.126.net/GunZRAYL69oj48Vx_vWnpg==/1406275375761547.jpg","accountStatus":0,"authStatus":0,"detailDescription":"","djStatus":10,"signature":"喜欢音乐，热爱歌词的制作和创作，希望能够结交和我兴趣一样的朋友","authority":0},"artists":null,"tracks":null,"status":0,"userId":64631536,"updateTime":1469033648079,"playCount":44506,"trackCount":22,"coverImgUrl":"http://p4.music.126.net/9P8Xs-ukLD1coCzLvcS2Iw==/3444769936647854.jpg","highQuality":false,"coverImgId":3444769936647854,"createTime":1469029056260,"specialType":0,"commentThreadId":"A_PL_0_426782554","tags":["华语","流行","旅行"],"subscribedCount":374,"trackNumberUpdateTime":1469033648079,"totalDuration":0,"adType":0,"description":"对于身处浩瀚宇宙中，一颗渺小蓝色星球上，如同尘埃一样微不足道的我们，在这个狭小的世界上旅行有什么意义呢？\n这个世界上，没有任何东西的美感，可以足以代替自然之美。所以，我想打破生活的平静，寻找另一番景致，每一种景致都足以触发新的人生。世上有不绝的风景，我们都要有不老的心情。","privacy":0,"cloudTrackCount":0,"trackUpdateTime":1469058776650,"newImported":false,"name":"世界上有不绝的风景，我有不老的心情","id":426782554,"shareCount":7,"commentCount":12},

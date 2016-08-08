@@ -10,8 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ritchie_huang.manyuemusic.Adapter.AllGedanListAdapter;
-import com.example.ritchie_huang.manyuemusic.DataItem.GedanListItem;
+import com.example.ritchie_huang.manyuemusic.Adapter.AllGedanFromNeteaseListAdapter;
+import com.example.ritchie_huang.manyuemusic.DataItem.GedanListNeteaseItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Util.Api;
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
@@ -27,12 +27,12 @@ import java.util.List;
 /**
  * Created by ritchie-huang on 16-8-8.
  */
-public class AllPlayListFrag extends Fragment {
+public class AllPlayListFromNeteaseFrag extends Fragment {
 
     private boolean isFromCache;
     private RecyclerView recyclerView;
-    private List<GedanListItem> gedanListItemList;
-    private AllGedanListAdapter adapter;
+    private List<GedanListNeteaseItem> gedanListItemListNetease;
+    private AllGedanFromNeteaseListAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,7 +42,7 @@ public class AllPlayListFrag extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.all_playlist, container, false);
+        View view = inflater.inflate(R.layout.frag_all_playlist, container, false);
 
         initView(view);
         loadData();
@@ -67,8 +67,8 @@ public class AllPlayListFrag extends Fragment {
                         return null;
                     }
                     for(int i = 0;i < array.size();i++) {
-                        GedanListItem item = gson.fromJson(array.get(i), GedanListItem.class);
-                        gedanListItemList.add(item);
+                        GedanListNeteaseItem item = gson.fromJson(array.get(i), GedanListNeteaseItem.class);
+                        gedanListItemListNetease.add(item);
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();
@@ -78,7 +78,7 @@ public class AllPlayListFrag extends Fragment {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                adapter = new AllGedanListAdapter(getContext(), gedanListItemList);
+                adapter = new AllGedanFromNeteaseListAdapter(getContext(), gedanListItemListNetease);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
                 recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
                 recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL_LIST));
@@ -92,7 +92,7 @@ public class AllPlayListFrag extends Fragment {
 
     private void initView(View view) {
         recyclerView = (RecyclerView) view.findViewById(R.id.all_playlist);
-        gedanListItemList = new ArrayList<>();
+        gedanListItemListNetease = new ArrayList<>();
 
 
 

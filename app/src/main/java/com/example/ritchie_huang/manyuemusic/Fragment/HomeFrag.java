@@ -42,10 +42,12 @@ public class HomeFrag extends Fragment {
         fragmentList = new ArrayList<>();
         PersonalRecommendFrag personalRecommendFrag = new PersonalRecommendFrag();
         AllSongsFrag allSongsFrag = new AllSongsFrag();
-        AllPlayListFrag allPlayListFrag = new AllPlayListFrag();
+//        AllPlayListFromNeteaseFrag allPlayListFromNeteaseFrag = new AllPlayListFromNeteaseFrag();
+        AllPlayListFromBMAFrag allPlayListFromBMAFrag = new AllPlayListFromBMAFrag();
         fragmentList.add(personalRecommendFrag);
         fragmentList.add(allSongsFrag);
-        fragmentList.add(allPlayListFrag);
+//        fragmentList.add(allPlayListFromNeteaseFrag);
+        fragmentList.add(allPlayListFromBMAFrag);
         viewPager = (ViewPager) view.findViewById(R.id.container);
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getFragmentManager());
         viewPager.setAdapter(adapter);

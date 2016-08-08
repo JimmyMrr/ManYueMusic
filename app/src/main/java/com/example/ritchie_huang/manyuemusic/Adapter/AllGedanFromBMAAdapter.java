@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.ritchie_huang.manyuemusic.DataItem.GedanBMAItem;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanHotItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -26,17 +27,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by ritchie-huang on 16-8-6.
+ * Created by ritchie-huang on 16-8-8.
  */
-public class GedanListAdapter extends RecyclerView.Adapter<GedanListAdapter.ItemViewHolder> {
+public class AllGedanFromBMAAdapter extends RecyclerView.Adapter<AllGedanFromBMAAdapter.ItemViewHolder> {
     private Context mContext;
-    private List<GedanHotItem> gedanListItemList;
+    private List<GedanBMAItem> gedanListItemList;
     SpannableString spanString;
 
-    int width = 160,height = 160;
+    int width = 300,height = 300;
 
 
-    public GedanListAdapter(Context mContext, List<GedanHotItem> gedanListItemList) {
+    public AllGedanFromBMAAdapter(Context mContext, List<GedanBMAItem> gedanListItemList) {
         this.mContext = mContext;
         this.gedanListItemList = gedanListItemList;
 
@@ -52,15 +53,15 @@ public class GedanListAdapter extends RecyclerView.Adapter<GedanListAdapter.Item
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.recommend_playlist_item, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.all_playlist_item, null);
         ItemViewHolder itemViewHolder = new ItemViewHolder(view);
         return itemViewHolder;
     }
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        final GedanHotItem item = gedanListItemList.get(position);
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getPic()))
+        final GedanBMAItem item = gedanListItemList.get(position);
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getPic_300()))
                 .setResizeOptions(new ResizeOptions(width, height))
                 .build();
 
@@ -91,7 +92,7 @@ public class GedanListAdapter extends RecyclerView.Adapter<GedanListAdapter.Item
 
     }
 
-    public void update(ArrayList<GedanHotItem> list){
+    public void update(List<GedanBMAItem> list){
         this.gedanListItemList = list;
         notifyDataSetChanged();
     }
