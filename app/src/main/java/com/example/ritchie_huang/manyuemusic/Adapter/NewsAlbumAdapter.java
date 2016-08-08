@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ritchie_huang.manyuemusic.DataItem.NewsAlbumItem;
-import com.example.ritchie_huang.manyuemusic.DataItem.RadioItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -60,7 +59,7 @@ public class NewsAlbumAdapter extends RecyclerView.Adapter<NewsAlbumAdapter.View
                 .setOldController(holder.album_art.getController())
                 .setImageRequest(request)
                 .build();
-
+        holder.album_art.setController(controller);
         holder.artist_name.setText(item.artistName);
         holder.album_name.setText(item.albumName);
 

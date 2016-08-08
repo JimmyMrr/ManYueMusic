@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ritchie_huang.manyuemusic.R;
+import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
 
 import java.util.List;
 
@@ -23,6 +24,9 @@ public class PersonalRecommandAdapter extends RecyclerView.Adapter<PersonalRecom
     private String[] moduleNames;
     private int[] moduleImageIds;
     private List<RecyclerView.Adapter> adapterList;
+    private OnRecyclerItemClickListener listener;
+
+
 
 
     public PersonalRecommandAdapter(Context mContext, String[] moduleNames, int[] moduleImageIds,List<RecyclerView.Adapter> adapterList) {
@@ -40,13 +44,27 @@ public class PersonalRecommandAdapter extends RecyclerView.Adapter<PersonalRecom
     }
 
     @Override
-    public void onBindViewHolder(ItemViewHolder holder, int position) {
+    public void onBindViewHolder(ItemViewHolder holder, final int position) {
         holder.moduleName.setText(moduleNames[position]);
         holder.moduleImage.setImageResource(moduleImageIds[position]);
-        //set
-//        holder.recyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
-//        holder.recyclerView.setAdapter(adapterList.get(position));
+        if (listener != null) {
+            holder.more.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    listener.onItemClick(view, position);
+                }
+            });
+        }
 
+        //set
+        holder.recyclerView.setLayoutManager(new GridLayoutManager(mContext, 3));
+        holder.recyclerView.setHasFixedSize(true);
+        holder.recyclerView.setAdapter(adapterList.get(position));
+
+    }
+
+    public void setOnItemClickListener(OnRecyclerItemClickListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -58,6 +76,7 @@ public class PersonalRecommandAdapter extends RecyclerView.Adapter<PersonalRecom
         TextView moduleName;
         ImageView moduleImage;
         RecyclerView recyclerView;
+        TextView more;
 
 
         public ItemViewHolder(View itemView) {
@@ -65,6 +84,7 @@ public class PersonalRecommandAdapter extends RecyclerView.Adapter<PersonalRecom
             this.moduleName = (TextView) itemView.findViewById(R.id.module_name);
             this.moduleImage = (ImageView) itemView.findViewById(R.id.module_image);
             this.recyclerView = (RecyclerView) itemView.findViewById(R.id.son_recyclerview);
+            this.more = (TextView) itemView.findViewById(R.id.more);
         }
     }
 }

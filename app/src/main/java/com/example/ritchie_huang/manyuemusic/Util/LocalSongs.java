@@ -4,7 +4,7 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.provider.MediaStore;
 
-import com.example.ritchie_huang.manyuemusic.DataItem.MP3Info;
+import com.example.ritchie_huang.manyuemusic.DataItem.MP3InfoItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,13 +14,13 @@ import java.util.List;
  */
 public class LocalSongs {
 
-    private List<MP3Info> mp3InfoList;
-    public List<MP3Info> getMp3Infos(ContentResolver contentResolver) {
+    private List<MP3InfoItem> mp3InfoItemList;
+    public List<MP3InfoItem> getMp3Infos(ContentResolver contentResolver) {
         Cursor cursor = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
-        mp3InfoList = new ArrayList<>();
+        mp3InfoItemList = new ArrayList<>();
 
         for (int i = 0; i < cursor.getCount(); i++) {
-            MP3Info mp3Info = new MP3Info();                               //新建一个歌曲对象,将从cursor里读出的信息存放进去,直到取完cursor里面的内容为止.
+            MP3InfoItem mp3InfoItem = new MP3InfoItem();                               //新建一个歌曲对象,将从cursor里读出的信息存放进去,直到取完cursor里面的内容为止.
             cursor.moveToNext();
             long id = cursor.getLong(cursor
                     .getColumnIndex(MediaStore.Audio.Media._ID));   //音乐id
@@ -50,17 +50,17 @@ public class LocalSongs {
                     .getColumnIndex(MediaStore.Audio.Media.IS_MUSIC));//是否为音乐
 
             if (isMusic != 0 && duration/(1000 * 60) >= 1) {     //只把1分钟以上的音乐添加到集合当中
-                mp3Info.setId(id);
-                mp3Info.setTitle(title);
-                mp3Info.setArtist(artist);
-                mp3Info.setDuration(duration);
-                mp3Info.setSize(size);
-                mp3Info.setUrl(url);
-                mp3Info.setAlbum(album);
-                mp3Info.setAlbum_id(album_id);
-                mp3InfoList.add(mp3Info);
+                mp3InfoItem.setId(id);
+                mp3InfoItem.setTitle(title);
+                mp3InfoItem.setArtist(artist);
+                mp3InfoItem.setDuration(duration);
+                mp3InfoItem.setSize(size);
+                mp3InfoItem.setUrl(url);
+                mp3InfoItem.setAlbum(album);
+                mp3InfoItem.setAlbum_id(album_id);
+                mp3InfoItemList.add(mp3InfoItem);
             }
         }
-        return mp3InfoList;
+        return mp3InfoItemList;
     }
 }

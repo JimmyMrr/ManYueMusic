@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private HomeFrag homeFrag;
     private FrameLayout frameLayout;
-    private List<Fragment> fragmentList;
+    public static List<Fragment> fragmentList;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
 

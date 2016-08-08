@@ -1,11 +1,13 @@
 package com.example.ritchie_huang.manyuemusic.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,20 +19,36 @@ import android.widget.FrameLayout;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
+import com.example.ritchie_huang.manyuemusic.Activity.HomeActivity;
+import com.example.ritchie_huang.manyuemusic.Activity.PlayingActivity;
+import com.example.ritchie_huang.manyuemusic.Activity.SearchSongsActivity;
+import com.example.ritchie_huang.manyuemusic.Adapter.GedanListAdapter;
+import com.example.ritchie_huang.manyuemusic.Adapter.NewsAlbumAdapter;
+import com.example.ritchie_huang.manyuemusic.Adapter.OnRecyclerItemClickListener;
 import com.example.ritchie_huang.manyuemusic.Adapter.PersonalRecommandAdapter;
+import com.example.ritchie_huang.manyuemusic.Adapter.RadioAdapter;
 import com.example.ritchie_huang.manyuemusic.DataItem.BannerItem;
 import com.example.ritchie_huang.manyuemusic.DataItem.Focus;
+import com.example.ritchie_huang.manyuemusic.DataItem.GedanHotItem;
+import com.example.ritchie_huang.manyuemusic.DataItem.NewsAlbumItem;
+import com.example.ritchie_huang.manyuemusic.DataItem.RadioItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Util.BMA;
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
 import com.example.ritchie_huang.manyuemusic.Util.NetworkUtils;
+import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -48,8 +66,12 @@ public class PersonalRecommendFrag extends Fragment {
     private String[] moduleNames = new String[]{"推荐歌单", "最新音乐", "主播电台"};
     private int[] moduleImageIds = new int[]{R.mipmap.ic_library_music_white_36dp, R.mipmap.ic_album_white_36dp, R.mipmap.ic_radio_white_36dp};
     private List<RecyclerView.Adapter> adapterList;
-
-
+    private List<GedanHotItem> gedanHotItemList;
+    private List<NewsAlbumItem> newsAlbumItemList;
+    private List<RadioItem> radioItemList;
+    private GedanListAdapter gedanListAdapter;
+    private NewsAlbumAdapter newsAlbumAdapter;
+    private RadioAdapter radioAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,22 +85,22 @@ public class PersonalRecommendFrag extends Fragment {
         init(view);
 
         loadAdapter();
-        adapter = new PersonalRecommandAdapter(getContext(), moduleNames,moduleImageIds,adapterList);
-        recyclerView.setAdapter(adapter);
+
         return view;
     }
 
 
-
     private void init(View view) {
+        gedanHotItemList=new ArrayList<>();
+        newsAlbumItemList=new ArrayList<>();
+        radioItemList=new ArrayList<>();
 
-        adapterList = new ArrayList<>();
         convenientBanner = (ConvenientBanner<BannerItem>) view.findViewById(R.id.convenientBanner);
         recyclerView = (RecyclerView) view.findViewById(R.id.father_recylerview);
         linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
-
-
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
+        recyclerView.setHasFixedSize(true);
         //顶部广告显示栏
         new BannerAsync().execute();
     }
@@ -139,10 +161,65 @@ public class PersonalRecommendFrag extends Fragment {
 
 
     private void loadAdapter() {
-        Gson gson = new Gson();
+        final Gson gson = new Gson();
         new AsyncTask<Void, Void, Void>() {
             @Override
             protected Void doInBackground(Void... voids) {
+                if (NetworkUtils.isConnectInternet(getContext())) {
+                    isFromCache = false;
+                }
+                String fmtrash = "http://music.163.com/api/radio/get";
+                String newAlbums = "http://music.163.com/api/album/new?area=ALL&offset=" + "0" + "&total=true&limit=" + "6";
+
+                //最热歌单
+                try {
+                    JsonObject result = HttpUtil.getResposeJsonObject(BMA.GeDan.hotGeDan(6), getContext(), isFromCache);
+                    if (result == null) {
+                        return null;
+                    }
+                    JsonArray array = result.get("content").getAsJsonObject().get("list").getAsJsonArray();
+                    if (array == null) {
+                        return null;
+                    }
+                    for (int i = 0; i < array.size(); i++) {
+                        GedanHotItem gedanHotItem = gson.fromJson(array.get(i), GedanHotItem.class);
+                        gedanHotItemList.add(gedanHotItem);
+                    }
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
+                //最新专辑
+                try {
+                    JsonObject result1 = HttpUtil.getResposeJsonObject(newAlbums, getContext(), isFromCache);
+                    JsonArray array1 = result1.get("albums").getAsJsonArray();
+                    Iterator it2 = array1.iterator();
+                    while (it2.hasNext()) {
+                        JsonElement e = (JsonElement) it2.next();
+                        JsonObject jo = e.getAsJsonObject();
+
+                        String artistName = jo.get("artist").getAsJsonObject().get("name").getAsString();
+                        NewsAlbumItem newsAlbumItem = new NewsAlbumItem(getStringValue(jo, "blurPicUrl"), getIntValue(jo, "id"),
+                                getStringValue(jo, "name"), artistName, getIntValue(jo, "publishTime"));
+                        newsAlbumItemList.add(newsAlbumItem);
+                    }
+
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
+
+                try {
+                    JsonObject result2 = HttpUtil.getResposeJsonObject(BMA.Radio.recommendRadioList(6), getContext(), isFromCache);
+                    JsonArray array2 = result2.get("list").getAsJsonArray();
+                    for (int i = 0; i < array2.size(); i++) {
+                        RadioItem radioItem = gson.fromJson(array2.get(i), RadioItem.class);
+                        radioItemList.add(radioItem);
+                    }
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
+
 
                 return null;
             }
@@ -150,16 +227,57 @@ public class PersonalRecommendFrag extends Fragment {
 
             @Override
             protected void onPostExecute(Void aVoid) {
+                adapterList = new ArrayList<RecyclerView.Adapter>();
+                gedanListAdapter = new GedanListAdapter(getContext(), gedanHotItemList);
+                newsAlbumAdapter = new NewsAlbumAdapter(getContext(), newsAlbumItemList);
+                radioAdapter = new RadioAdapter(getContext(), radioItemList);
+                adapterList.add(gedanListAdapter);
+                adapterList.add(newsAlbumAdapter);
+                adapterList.add(radioAdapter);
 
+                adapter = new PersonalRecommandAdapter(getContext(), moduleNames, moduleImageIds, adapterList);
+                recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
+                recyclerView.setHasFixedSize(true);
+                recyclerView.setAdapter(adapter);
+                adapter.setOnItemClickListener(new OnRecyclerItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        if (position == 0) {
+                            //点击更多设置跳转到对应界面
+//                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+//
+//                            transaction.hide(HomeActivity.fragmentList.get(0)).show(HomeActivity.fragmentList.get(2)).commit();
+//                            Intent intent = new Intent(getContext(), PlayingActivity.class);
+//                            startActivity(intent);
+                        }
+                        if (position == 1) {
+                            Intent intent = new Intent(getContext(), PlayingActivity.class);
+                            startActivity(intent);
+                        }
+                        if (position == 2) {
+                            Intent intent = new Intent(getContext(), PlayingActivity.class);
+                            startActivity(intent);
+
+                        }
+                    }
+                });
             }
         }.execute();
 
 
-
-
-
-
     }
+
+    private String getStringValue(JsonObject jsonObject, String key) {
+        JsonElement nameElement = jsonObject.get(key);
+        return nameElement.getAsString();
+    }
+
+
+    private int getIntValue(JsonObject jsonObject, String key) {
+        JsonElement nameElement = jsonObject.get(key);
+        return nameElement.getAsInt();
+    }
+
 
     @Override
     public void onResume() {

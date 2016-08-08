@@ -41,9 +41,11 @@ public class HomeFrag extends Fragment {
     private void init(View view) {
         fragmentList = new ArrayList<>();
         PersonalRecommendFrag personalRecommendFrag = new PersonalRecommendFrag();
-        SongsFrag songsFrag = new SongsFrag();
+        AllSongsFrag allSongsFrag = new AllSongsFrag();
+        AllPlayListFrag allPlayListFrag = new AllPlayListFrag();
         fragmentList.add(personalRecommendFrag);
-        fragmentList.add(songsFrag);
+        fragmentList.add(allSongsFrag);
+        fragmentList.add(allPlayListFrag);
         viewPager = (ViewPager) view.findViewById(R.id.container);
         SectionsPagerAdapter adapter = new SectionsPagerAdapter(getFragmentManager());
         viewPager.setAdapter(adapter);
@@ -79,9 +81,9 @@ public class HomeFrag extends Fragment {
                 case 0:
                     return "个性推荐";
                 case 1:
-                    return "歌单";
+                    return "歌曲";
                 case 2:
-                    return "排行榜";
+                    return "歌单";
             }
             return null;
         }

@@ -89,8 +89,8 @@ public class HttpUtil{
     public static JsonObject getResposeJsonObject(String action1 , Context context , boolean forceCache){
         try {
 
-            File sdcache = context.getExternalCacheDir();
-//            File sdcache = new File(context.getCacheDir(), "/storage/sdcard0/Android/data/com.example.ritchie_huang.manyuemusic/cache");
+//            File sdcache = context.getExternalCacheDir();
+            File sdcache = new File(context.getCacheDir(), "/storage/sdcard0/Android/data/com.example.ritchie_huang.manyuemusic/cache");
             Cache cache = new Cache(sdcache.getAbsoluteFile(), 1024 * 1024 * 30); //30Mb
             mOkHttpClient.setCache(cache);
 

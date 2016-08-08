@@ -57,6 +57,7 @@ public class RadioAdapter extends RecyclerView.Adapter<RadioAdapter.ViewHolder> 
                 .setOldController(holder.album_artist.getController())
                 .setImageRequest(request)
                 .build();
+        holder.album_artist.setController(controller);
         holder.album_name.setText(item.getTitle());
         holder.artist_name.setText(item.getDesc());
     }

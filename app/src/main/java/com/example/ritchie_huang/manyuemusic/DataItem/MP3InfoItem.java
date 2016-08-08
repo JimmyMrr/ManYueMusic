@@ -3,7 +3,7 @@ package com.example.ritchie_huang.manyuemusic.DataItem;
 /**
  * Created by ritchie-huang on 16-8-4.
  */
-public class MP3Info {
+public class MP3InfoItem {
     private long id;
     private long album_id;
     private String title;

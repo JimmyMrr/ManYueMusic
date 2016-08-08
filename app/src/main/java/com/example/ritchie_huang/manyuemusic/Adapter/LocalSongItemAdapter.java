@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ritchie_huang.manyuemusic.DataItem.MP3Info;
+import com.example.ritchie_huang.manyuemusic.DataItem.MP3InfoItem;
 import com.example.ritchie_huang.manyuemusic.R;
 
 import java.util.List;
@@ -20,11 +20,11 @@ import java.util.List;
 public class LocalSongItemAdapter extends RecyclerView.Adapter<LocalSongItemAdapter.ItemViewHolder> {
 
     private Context mContext;
-    private List<MP3Info> mp3InfoList;
+    private List<MP3InfoItem> mp3InfoItemList;
     private OnRecyclerViewItemClickListener mOnItemClickListener = null;
-    public LocalSongItemAdapter(Context mContext, List<MP3Info> mp3InfoList) {
+    public LocalSongItemAdapter(Context mContext, List<MP3InfoItem> mp3InfoItemList) {
         this.mContext = mContext;
-        this.mp3InfoList = mp3InfoList;
+        this.mp3InfoItemList = mp3InfoItemList;
     }
 
 
@@ -47,15 +47,22 @@ public class LocalSongItemAdapter extends RecyclerView.Adapter<LocalSongItemAdap
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, final int position) {
-        MP3Info mp3Info = mp3InfoList.get(position);
-        holder.songName.setText(mp3Info.getTitle());
-        holder.songArtist.setText(mp3Info.getArtist());
+        MP3InfoItem mp3InfoItem = mp3InfoItemList.get(position);
+        holder.songName.setText(mp3InfoItem.getTitle());
+        holder.songArtist.setText(mp3InfoItem.getArtist());
 
         if (mOnItemClickListener != null) {
             holder.rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     mOnItemClickListener.onItemClick(view,position);
+                }
+            });
+
+            holder.songChoice.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(mContext, "hello", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -66,7 +73,7 @@ public class LocalSongItemAdapter extends RecyclerView.Adapter<LocalSongItemAdap
 
     @Override
     public int getItemCount() {
-        return mp3InfoList.size();
+        return mp3InfoItemList.size();
     }
 
     public class ItemViewHolder extends RecyclerView.ViewHolder{

@@ -14,10 +14,9 @@ import android.widget.TextView;
 
 import com.example.ritchie_huang.manyuemusic.Activity.PlayingActivity;
 import com.example.ritchie_huang.manyuemusic.Adapter.LocalSongItemAdapter;
-import com.example.ritchie_huang.manyuemusic.DataItem.MP3Info;
+import com.example.ritchie_huang.manyuemusic.DataItem.MP3InfoItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Service.PlayService;
-import com.example.ritchie_huang.manyuemusic.Util.Constants;
 import com.example.ritchie_huang.manyuemusic.Util.LocalSongs;
 import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
 
@@ -26,7 +25,7 @@ import java.util.List;
 /**
  * Created by ritchie-huang on 16-8-4.
  */
-public class SongsFrag extends Fragment {
+public class AllSongsFrag extends Fragment {
 
     //HomeActivity的控件
     private ImageView song_image;
@@ -39,7 +38,7 @@ public class SongsFrag extends Fragment {
 
     private RecyclerView recyclerView;
     private LocalSongItemAdapter adapter;
-    private List<MP3Info> mp3InfoList;
+    private List<MP3InfoItem> mp3InfoItemList;
     private LocalSongs localSongs;
     private boolean isPlaying = false;
 
@@ -63,16 +62,16 @@ public class SongsFrag extends Fragment {
 
 
         localSongs = new LocalSongs();
-        mp3InfoList = localSongs.getMp3Infos(getActivity().getContentResolver());
-        adapter = new LocalSongItemAdapter(getContext(), mp3InfoList);
+        mp3InfoItemList = localSongs.getMp3Infos(getActivity().getContentResolver());
+        adapter = new LocalSongItemAdapter(getContext(), mp3InfoItemList);
         adapter.setOnItemClickListener(new LocalSongItemAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
 //播放
-                MP3Info mp3Info = mp3InfoList.get(position);
+                MP3InfoItem mp3InfoItem = mp3InfoItemList.get(position);
                 Intent intent1 = new Intent(getContext(), PlayingActivity.class);
                 Intent intent = new Intent(getContext(), PlayService.class);
-                intent.putExtra("url", mp3Info.getUrl());
+                intent.putExtra("url", mp3InfoItem.getUrl());
                 intent.putExtra("pos", position);
                 isPlaying = true;
                 startActivity(intent1);
