@@ -1,6 +1,7 @@
 package com.example.ritchie_huang.manyuemusic.Activity;
 
 
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -38,7 +39,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private ViewPager mViewPager;
-    public static OkHttpClient client;
+//    public static OkHttpClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,10 +47,10 @@ public class HomeActivity extends AppCompatActivity {
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_home);
 
-        client = new OkHttpClient();
-        client.setCookieHandler(new CookieManager(
-                new PersistentCookieStore(getApplicationContext()),
-                CookiePolicy.ACCEPT_ALL));
+//        client = new OkHttpClient();
+//        client.setCookieHandler(new CookieManager(
+//                new PersistentCookieStore(getApplicationContext()),
+//                CookiePolicy.ACCEPT_ALL));
 
 
         fragmentList = new ArrayList<>();
@@ -63,12 +64,11 @@ public class HomeActivity extends AppCompatActivity {
 
 
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        frameLayout = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.fram,null);
+        frameLayout = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.fram, null);
         mViewPager = (ViewPager) frameLayout.findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.fragment_container,fragmentList.get(0)).commit();
-
+        transaction.add(R.id.fragment_container, fragmentList.get(0)).commit();
 
 
     }
@@ -89,8 +89,14 @@ public class HomeActivity extends AppCompatActivity {
             return true;
         }
         if (id == R.id.searchIcon) {
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.hide(fragmentList.get(0)).commit();
+//            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//            if (fragmentList.get(0).isAdded()) {
+//                transaction.hide(fragmentList.get(0)).commit();
+//            }
+            Intent intent = new Intent(getApplicationContext(), SearchSongsActivity.class);
+            startActivity(intent);
+
+
 //            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 //            transaction.replace(R.id.fragment_container, fragmentList.get(1)).commit();
 
@@ -99,7 +105,10 @@ public class HomeActivity extends AppCompatActivity {
         }
         if (id == R.id.musicIcon) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.show(fragmentList.get(0)).commit();
+            if (fragmentList.get(0).isAdded()) {
+
+                transaction.show(fragmentList.get(0)).commit();
+            }
             return true;
         }
 

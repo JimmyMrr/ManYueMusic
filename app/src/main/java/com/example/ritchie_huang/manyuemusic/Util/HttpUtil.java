@@ -1,59 +1,259 @@
 package com.example.ritchie_huang.manyuemusic.Util;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.squareup.okhttp.Cache;
+import com.squareup.okhttp.CacheControl;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.CookieManager;
+import java.net.CookiePolicy;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by ritchie-huang on 16-8-2.
  */
-public class HttpUtil extends Thread {
-    private OkHttpClient client;
-    private Handler handler;
-    private RequestBody formbody;
-    private String url;
+public class HttpUtil{
 
-    public HttpUtil(OkHttpClient client, String url, RequestBody formbody, Handler handler) {
-        this.client = client;
-        this.url = url;
-        this.formbody = formbody;
-        this.handler = handler;
-    }
+    private static final OkHttpClient mOkHttpClient = new OkHttpClient();
 
-    @Override
-    public void run() {
-        doPost();
 
-    }
+    public static void getOut(final  String url) {
+        try {
+            mOkHttpClient.setConnectTimeout(1000, TimeUnit.MINUTES);
+            mOkHttpClient.setReadTimeout(1000, TimeUnit.MINUTES);
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+            Response response = mOkHttpClient.newCall(request).execute();
+            if(response.isSuccessful()){
 
-    private void doPost() {
-        Request request = new Request.Builder()
-                .url(url)
-                .post(formbody)
-                .addHeader("Cookie","appver=1.5.0.75771")
-                .build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-                handler.sendEmptyMessage(Constants.OKHTTP_CALL_FAIL);
+                FileOutputStream fo = new FileOutputStream("/storage/emulated/0/" + "gedangein" + ".json");
+                byte[] c = new byte[1024];
+                while (response.body().source().read(c) != -1){
+                    fo.write(c);
+                }
             }
 
-            @Override
-            public void onResponse(Response response) throws IOException {
-                Message message = Message.obtain();
-                message.what = Constants.OKHTTP_CALL_SUCCESS;
-                message.obj = response.body().string();
-                handler.sendMessage(message);
-            }
-        });
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
+
+    public static String getResposeString(String action1 ){
+        try {
+            mOkHttpClient.setConnectTimeout(1000, TimeUnit.MINUTES);
+            mOkHttpClient.setReadTimeout(1000, TimeUnit.MINUTES);
+            Request request = new Request.Builder()
+                    .url(action1)
+                    .build();
+            Response response = mOkHttpClient.newCall(request).execute();
+            if(response.isSuccessful()){
+
+                File file = new File("/storage/emulated/0/billboard.json");
+                String c = response.body().string();
+                FileOutputStream fo = new FileOutputStream(file);
+                fo.write(c.getBytes());
+
+                Log.e("billboard",c);
+                return c;
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+//       mOkHttpClient.setCookieHandler(new CookieManager(
+//                new PersistentCookieStore(getContext().getApplicationContext()),
+//                CookiePolicy.ACCEPT_ALL));
+
+        return null;
+    }
+
+    public static JsonObject getResposeJsonObject(String action1 , Context context , boolean forceCache){
+        try {
+
+            File sdcache = context.getExternalCacheDir();
+//            File sdcache = new File(context.getCacheDir(), "/storage/sdcard0/Android/data/com.example.ritchie_huang.manyuemusic/cache");
+            Cache cache = new Cache(sdcache.getAbsoluteFile(), 1024 * 1024 * 30); //30Mb
+            mOkHttpClient.setCache(cache);
+
+            mOkHttpClient.setConnectTimeout(1000, TimeUnit.MINUTES);
+            mOkHttpClient.setReadTimeout(1000, TimeUnit.MINUTES);
+            Request.Builder builder = new Request.Builder()
+                    .url(action1)
+                    .addHeader("Referer","http://music.163.com/")
+                    .addHeader("Cookie", "appver=1.5.0.75771");
+            if(forceCache){
+                builder.cacheControl(CacheControl.FORCE_CACHE);
+            }
+            Request request = builder.build();
+            Response response = mOkHttpClient.newCall(request).execute();
+            if(response.isSuccessful()){
+                String c = response.body().string();
+                Log.e("re",c);
+                JsonParser parser = new JsonParser();
+                JsonElement el = parser.parse(c);
+                return el.getAsJsonObject();
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+//       mOkHttpClient.setCookieHandler(new CookieManager(
+//                new PersistentCookieStore(getContext().getApplicationContext()),
+//                CookiePolicy.ACCEPT_ALL));
+
+        return null;
+    }
+
+    public static JsonObject getResposeJsonObject(String action1){
+        try {
+            mOkHttpClient.setConnectTimeout(1000, TimeUnit.MINUTES);
+            mOkHttpClient.setReadTimeout(1000, TimeUnit.MINUTES);
+            Request request = new Request.Builder()
+                    .url(action1)
+                    .addHeader("Referer","http://music.163.com/")
+                    .addHeader("Cookie", "appver=1.5.0.75771")
+                    .build();
+            Response response = mOkHttpClient.newCall(request).execute();
+            if(response.isSuccessful()){
+                String c = response.body().string();
+                Log.e("re",c);
+                JsonParser parser = new JsonParser();
+                JsonElement el = parser.parse(c);
+                return el.getAsJsonObject();
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+//       mOkHttpClient.setCookieHandler(new CookieManager(
+//                new PersistentCookieStore(getContext().getApplicationContext()),
+//                CookiePolicy.ACCEPT_ALL));
+
+        return null;
+    }
+
+    public static void downMp3(final  String url,final String name){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    mOkHttpClient.setConnectTimeout(1000, TimeUnit.MINUTES);
+                    mOkHttpClient.setReadTimeout(1000, TimeUnit.MINUTES);
+                    Request request = new Request.Builder()
+                            .url(url)
+                            .build();
+                    Response response = mOkHttpClient.newCall(request).execute();
+                    if(response.isSuccessful()){
+                        FileOutputStream fo = new FileOutputStream("/storage/emulated/0/" + name + ".mp3");
+                        byte[] c = new byte[1024];
+                        while (response.body().source().read(c) != -1){
+                            fo.write(c);
+                        }
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
+
+    }
+
+    public static void postUrl(Context context,String j){
+        try{
+            String action = "https://music.163.com/weapi/login/";
+            RequestBody formBody = new FormEncodingBuilder()
+                    //         .add("",)
+                    .build();
+            Log.e("post","p");
+            Request request = new Request.Builder()
+                    .url(action)
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .header("Host", "music.163.com")
+                    .header("Cookie", "appver=1.5.0.75771")
+                    .header("Referer", "http://music.163.com/")
+                    .header("Connection", "keep-alive")
+                    .header("Accept-Encoding", "gzip,deflate")
+                    .header("Accept", "*/*")
+                    .header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
+                    .post(formBody)
+                    .build();
+
+            mOkHttpClient.setCookieHandler(new CookieManager(
+                    new PersistentCookieStore(context.getApplicationContext()),
+                    CookiePolicy.ACCEPT_ALL));
+
+            Response response = mOkHttpClient.newCall(request).execute();
+            if (response.isSuccessful()) {
+                Log.e("respose",response.body().string());
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public static void postNetease(Context context,String j){
+        try{
+            String action = "https://music.163.com/weapi/login/";
+            RequestBody formBody = new FormEncodingBuilder()
+                    .add("params", "9NdyZTlp0Q/f1E1ora4tGM0uLYXqh7MD0mk7632ilWQvRDPZ02UkHrGFUccwW4HZYpacpPnmE+oMr/HI/vhuQvg8zYKgDP6NOaXG8nKDJpQTfOAiXT5KDrJOvb7ejSj/")
+                    .add("encSeckey", "ae878167c394a959699c025a5c36043d0ae043c42d7f55fe4d1191c8ac9f3abe285b78c4a25ed6d9394a0ba0cb83a9a62de697199bd337f1de183bb07d6764a051495ea873ad615bb0a7e69f44d9168fc78ed1d61feb142ad06679dce58257ee9005756a18032ff499a4e24f7658bb59de2219f21f568301d43dba500e0c2d3b")
+                    .build();
+            String json = "{\"params\": \"9NdyZTlp0Q/f1E1ora4tGM0uLYXqh7MD0mk7632ilWQvRDPZ02UkHrGFUccwW4HZYpacpPnmE+oMr/HI/vhuQvg8zYKgDP6NOaXG8nKDJpQTfOAiXT5KDrJOvb7ejSj/\",  " +
+                    "\"encSecKey\": \"ae878167c394a959699c025a5c36043d0ae043c42d7f55fe4d1191c8ac9f3abe285b78c4a25ed6d9394a0ba0cb83a9a62de697199bd337f1de183bb07d6764a051495ea873ad615bb0a7e69f44d9168fc78ed1d61feb142ad06679dce58257ee9005756a18032ff499a4e24f7658bb59de2219f21f568301d43dba500e0c2d3b\"}";
+            RequestBody requestBody = RequestBody.create(MediaType.parse("JSON"), json);
+            Log.e("post","p");
+            Request request = new Request.Builder()
+                    .url(action)
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .header("Host", "music.163.com")
+                    .header("Cookie", "appver=1.5.0.75771")
+                    .header("Referer", "http://music.163.com/")
+                    .header("Connection", "keep-alive")
+                    .header("Accept-Encoding", "gzip,deflate")
+                    .header("Accept", "*/*")
+                    .header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.152 Safari/537.36")
+                    .post(requestBody)
+                    .build();
+
+            mOkHttpClient.setCookieHandler(new CookieManager(
+                    new PersistentCookieStore(context.getApplicationContext()),
+                    CookiePolicy.ACCEPT_ALL));
+
+            Response response = mOkHttpClient.newCall(request).execute();
+            if (response.isSuccessful()) {
+                Log.e("respose",response.body().string());
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
 }

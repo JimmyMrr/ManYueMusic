@@ -2,44 +2,53 @@ package com.example.ritchie_huang.manyuemusic.Fragment;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.FrameLayout;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
-import com.example.ritchie_huang.manyuemusic.Activity.HomeActivity;
+import com.example.ritchie_huang.manyuemusic.Adapter.PersonalRecommandAdapter;
 import com.example.ritchie_huang.manyuemusic.DataItem.BannerItem;
+import com.example.ritchie_huang.manyuemusic.DataItem.Focus;
 import com.example.ritchie_huang.manyuemusic.R;
+import com.example.ritchie_huang.manyuemusic.Util.BMA;
+import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
+import com.example.ritchie_huang.manyuemusic.Util.NetworkUtils;
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import com.squareup.okhttp.OkHttpClient;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ritchie-huang on 16-8-2.
  */
 public class PersonalRecommendFrag extends Fragment {
     private ConvenientBanner<BannerItem> convenientBanner;
-    private String[] images = {"http://img2.imgtn.bdimg.com/it/u=3093785514,1341050958&fm=21&gp=0.jpg",
-            "http://img2.3lian.com/2014/f2/37/d/40.jpg",
-            "http://d.3987.com/sqmy_131219/001.jpg",
-            "http://img2.3lian.com/2014/f2/37/d/39.jpg",
-            "http://www.8kmm.com/UploadFiles/2012/8/201208140920132659.jpg",
-            "http://f.hiphotos.baidu.com/image/h%3D200/sign=1478eb74d5a20cf45990f9df460b4b0c/d058ccbf6c81800a5422e5fdb43533fa838b4779.jpg",
-            "http://f.hiphotos.baidu.com/image/pic/item/09fa513d269759ee50f1971ab6fb43166c22dfba.jpg"
-    };
-    private List<BannerItem> list = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private LinearLayoutManager linearLayoutManager;
+    private PersonalRecommandAdapter adapter;
+    private FrameLayout frameLayout;
+    private boolean isFromCache;
+    private List<BannerItem> list;
+    private String[] moduleNames = new String[]{"推荐歌单", "最新音乐", "主播电台"};
+    private int[] moduleImageIds = new int[]{R.mipmap.ic_library_music_white_36dp, R.mipmap.ic_album_white_36dp, R.mipmap.ic_radio_white_36dp};
+    private List<RecyclerView.Adapter> adapterList;
+
 
 
     @Override
@@ -52,25 +61,63 @@ public class PersonalRecommendFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_personal_recommand, container, false);
         init(view);
+
+        loadAdapter();
+        adapter = new PersonalRecommandAdapter(getContext(), moduleNames,moduleImageIds,adapterList);
+        recyclerView.setAdapter(adapter);
         return view;
     }
 
-    private void init(View view) {
-        convenientBanner = (ConvenientBanner<BannerItem>) view.findViewById(R.id.convenientBanner);
-        for (String imag : images) {
-            BannerItem bannerItem = new BannerItem();
-            bannerItem.setBanner_image_url(imag);
-            list.add(bannerItem);
-        }
-        convenientBanner.setPages(new CBViewHolderCreator<NetworkImageHolderView>() {
 
-            @Override
-            public NetworkImageHolderView createHolder() {
-                return new NetworkImageHolderView();
+
+    private void init(View view) {
+
+        adapterList = new ArrayList<>();
+        convenientBanner = (ConvenientBanner<BannerItem>) view.findViewById(R.id.convenientBanner);
+        recyclerView = (RecyclerView) view.findViewById(R.id.father_recylerview);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+
+
+        //顶部广告显示栏
+        new BannerAsync().execute();
+    }
+
+    public class BannerAsync extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (NetworkUtils.isConnectInternet(getContext())) {
+                isFromCache = false;
             }
-        }, list)
-                .setPageIndicator(new int[]{R.mipmap.ic_radio_button_unchecked_white_24dp, R.mipmap.ic_radio_button_checked_white_24dp})
-                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL);
+            list = new ArrayList<>();
+            JsonArray array = HttpUtil.getResposeJsonObject(BMA.focusPic(7), getContext(), isFromCache).get("pic").getAsJsonArray();
+            Gson gson = new Gson();
+
+            for (int i = 0; i < array.size(); i++) {
+                BannerItem bannerItem = new BannerItem();
+                Focus focus = gson.fromJson(array.get(i), Focus.class);
+                if (focus != null) {
+                    bannerItem.setBanner_image_url(focus.getRandpic());
+                }
+                list.add(bannerItem);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            convenientBanner.setPages(new CBViewHolderCreator<NetworkImageHolderView>() {
+
+                @Override
+                public NetworkImageHolderView createHolder() {
+                    return new NetworkImageHolderView();
+                }
+            }, list)
+                    .setPageIndicator(new int[]{R.mipmap.ic_radio_button_unchecked_white_24dp, R.mipmap.ic_radio_button_checked_white_24dp})
+                    .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL);
+
+        }
     }
 
 
@@ -87,8 +134,31 @@ public class PersonalRecommendFrag extends Fragment {
         @Override
         public void UpdateUI(Context context, int position, BannerItem data) {
             ((SimpleDraweeView) view.findViewById(R.id.banner_image)).setImageURI(Uri.parse(data.getBanner_image_url()));
-
         }
+    }
+
+
+    private void loadAdapter() {
+        Gson gson = new Gson();
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+
+                return null;
+            }
+
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+
+            }
+        }.execute();
+
+
+
+
+
+
     }
 
     @Override
@@ -102,4 +172,6 @@ public class PersonalRecommendFrag extends Fragment {
         super.onPause();
         convenientBanner.stopTurning();
     }
+
+
 }

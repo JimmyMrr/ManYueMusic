@@ -14,6 +14,8 @@
     <color name="light_grey">#FFC7B7B7</color>
     <color name="middle_grey">#4c4a4a</color>
     <color name="song_bg">#dbdbdb</color>
+    <color name="text_color">#FF000000</color>
+    <color name="test_color">#696969</color>
 
 
 

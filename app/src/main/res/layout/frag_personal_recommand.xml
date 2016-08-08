@@ -9,9 +9,24 @@
     <com.bigkoo.convenientbanner.ConvenientBanner
         android:id="@+id/convenientBanner"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="140dp"
         app:canLoop="true"
         ></com.bigkoo.convenientbanner.ConvenientBanner>
 
+    <!--<include layout="@layout/recommend_playlist" />-->
+
+    <!--<FrameLayout-->
+        <!--android:id="@+id/fram"-->
+        <!--android:layout_weight="1"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"/>-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/father_recylerview"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

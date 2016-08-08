@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ritchie_huang.manyuemusic.DataItem.MP3Info;
 import com.example.ritchie_huang.manyuemusic.R;
@@ -49,6 +50,7 @@ public class LocalSongItemAdapter extends RecyclerView.Adapter<LocalSongItemAdap
         MP3Info mp3Info = mp3InfoList.get(position);
         holder.songName.setText(mp3Info.getTitle());
         holder.songArtist.setText(mp3Info.getArtist());
+
         if (mOnItemClickListener != null) {
             holder.rootView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -56,6 +58,7 @@ public class LocalSongItemAdapter extends RecyclerView.Adapter<LocalSongItemAdap
                     mOnItemClickListener.onItemClick(view,position);
                 }
             });
+
         }
 
 
@@ -79,12 +82,7 @@ public class LocalSongItemAdapter extends RecyclerView.Adapter<LocalSongItemAdap
             this.songArtist = (TextView) itemView.findViewById(R.id.song_artist);
             this.songChoice = (ImageView) itemView.findViewById(R.id.song_choice);
 
-            this.songChoice.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    //显示歌曲信息
-                }
-            });
+
 
         }
 

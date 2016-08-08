@@ -43,6 +43,12 @@ public class SongsFrag extends Fragment {
     private LocalSongs localSongs;
     private boolean isPlaying = false;
 
+
+    private int repeatState;        //循环标识
+    private final int isCurrentRepeat = 1; // 单曲循环
+    private final int isAllRepeat = 2; // 全部循环
+    private final int isNoneRepeat = 3; // 无重复播放
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +59,9 @@ public class SongsFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.frag_songlist, null, false);
         init(view);
+
+
+
         localSongs = new LocalSongs();
         mp3InfoList = localSongs.getMp3Infos(getActivity().getContentResolver());
         adapter = new LocalSongItemAdapter(getContext(), mp3InfoList);
