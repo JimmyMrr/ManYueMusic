@@ -52,7 +52,6 @@ public class AllPlayListFromBMAFrag extends Fragment {
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL_LIST));
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

@@ -52,7 +52,7 @@ public class AllGedanFromNeteaseListAdapter extends RecyclerView.Adapter<AllGeda
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.all_playlist_item, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.frag_all_playlist_item, null);
         ItemViewHolder itemViewHolder = new ItemViewHolder(view);
         return itemViewHolder;
     }

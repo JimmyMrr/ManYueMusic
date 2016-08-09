@@ -1,6 +1,7 @@
 package com.example.ritchie_huang.manyuemusic.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -13,8 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.ritchie_huang.manyuemusic.Activity.GedanDetailActivity;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanBMAItem;
-import com.example.ritchie_huang.manyuemusic.DataItem.GedanHotItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -23,7 +24,6 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,14 +34,14 @@ public class AllGedanFromBMAAdapter extends RecyclerView.Adapter<AllGedanFromBMA
     private List<GedanBMAItem> gedanListItemList;
     SpannableString spanString;
 
-    int width = 300,height = 300;
+    int width = 300, height = 300;
 
 
     public AllGedanFromBMAAdapter(Context mContext, List<GedanBMAItem> gedanListItemList) {
         this.mContext = mContext;
         this.gedanListItemList = gedanListItemList;
 
-        Bitmap b = BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.index_icn_earphone);
+        Bitmap b = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.index_icn_earphone);
         ImageSpan imgSpan = new ImageSpan(mContext, b, ImageSpan.ALIGN_BASELINE);
         spanString = new SpannableString("icon");
         spanString.setSpan(imgSpan, 0, 4, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -49,11 +49,9 @@ public class AllGedanFromBMAAdapter extends RecyclerView.Adapter<AllGedanFromBMA
     }
 
 
-
-
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.all_playlist_item, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.frag_all_playlist_item, null);
         ItemViewHolder itemViewHolder = new ItemViewHolder(view);
         return itemViewHolder;
     }
@@ -73,29 +71,31 @@ public class AllGedanFromBMAAdapter extends RecyclerView.Adapter<AllGedanFromBMA
         holder.list_name.setText(item.getTitle());
         holder.list_listener.setText(spanString);
         int count = Integer.parseInt(item.getListenum());
-        if(count > 10000){
+        if (count > 10000) {
             count = count / 10000;
             holder.list_listener.append(" " + count + "万");
-        }else {
+        } else {
             holder.list_listener.append(" " + item.getListenum());
         }
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(mContext, NetPlaylistDetailActivity.class);
-//                intent.putExtra("albumid",item.getListid());
-//                intent.putExtra("albumart",item.getPic());
-//                intent.putExtra("albumname",item.getTitle());
-//                mContext.startActivity(intent);
-//            }
-//        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, GedanDetailActivity.class);
+                intent.putExtra("albumid",item.getListid());
+                intent.putExtra("albumart",item.getPic_300());
+                intent.putExtra("albumname",item.getTitle());
+                intent.putExtra("albumdesc",item.getDesc());
+                mContext.startActivity(intent);
+            }
+        });
 
     }
 
-    public void update(List<GedanBMAItem> list){
+    public void update(List<GedanBMAItem> list) {
         this.gedanListItemList = list;
         notifyDataSetChanged();
     }
+
     @Override
     public int getItemCount() {
         return gedanListItemList.size();

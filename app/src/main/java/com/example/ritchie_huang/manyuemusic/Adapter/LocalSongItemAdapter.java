@@ -11,17 +11,22 @@ import android.widget.Toast;
 
 import com.example.ritchie_huang.manyuemusic.DataItem.MP3InfoItem;
 import com.example.ritchie_huang.manyuemusic.R;
+import com.example.ritchie_huang.manyuemusic.ViewHolder.CommonItemViewHolder;
 
 import java.util.List;
 
 /**
  * Created by ritchie-huang on 16-8-4.
  */
-public class LocalSongItemAdapter extends RecyclerView.Adapter<LocalSongItemAdapter.ItemViewHolder> {
+public class LocalSongItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context mContext;
     private List<MP3InfoItem> mp3InfoItemList;
     private OnRecyclerViewItemClickListener mOnItemClickListener = null;
+
+    private static final int COMMON_TYPE = 0;
+    private static final int ITEM_TYPE = 1;
+
     public LocalSongItemAdapter(Context mContext, List<MP3InfoItem> mp3InfoItemList) {
         this.mContext = mContext;
         this.mp3InfoItemList = mp3InfoItemList;
@@ -29,7 +34,7 @@ public class LocalSongItemAdapter extends RecyclerView.Adapter<LocalSongItemAdap
 
 
     public static interface OnRecyclerViewItemClickListener {
-        void onItemClick(View view,int position);
+        void onItemClick(View view, int position);
     }
 
 
@@ -38,45 +43,65 @@ public class LocalSongItemAdapter extends RecyclerView.Adapter<LocalSongItemAdap
     }
 
     @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.local_song_item, null);
-        ItemViewHolder itemViewHolder = new ItemViewHolder(view);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == COMMON_TYPE) {
+            return new CommonItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.common_item, null));
+        } else {
+            return new ItemViewHolder(LayoutInflater.from(mContext).inflate(R.layout.fragment_playlist_detail_item, null));
+        }
 
-        return itemViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(ItemViewHolder holder, final int position) {
-        MP3InfoItem mp3InfoItem = mp3InfoItemList.get(position);
-        holder.songName.setText(mp3InfoItem.getTitle());
-        holder.songArtist.setText(mp3InfoItem.getArtist());
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+        if (holder instanceof ItemViewHolder) {
+            MP3InfoItem mp3InfoItem = mp3InfoItemList.get(position-1);
+            ((ItemViewHolder) holder).songName.setText(mp3InfoItem.getTitle());
+            ((ItemViewHolder) holder).songArtist.setText(mp3InfoItem.getArtist());
+            ((ItemViewHolder) holder).songTrack.setText(position + "");
 
-        if (mOnItemClickListener != null) {
-            holder.rootView.setOnClickListener(new View.OnClickListener() {
+            if (mOnItemClickListener != null) {
+                ((ItemViewHolder) holder).rootView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mOnItemClickListener.onItemClick(view, position-1);
+                    }
+                });
+
+                ((ItemViewHolder) holder).songChoice.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(mContext, "hello", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            }
+        } else if (holder instanceof CommonItemViewHolder) {
+            ((CommonItemViewHolder) holder).textView.setText("(共" + mp3InfoItemList.size() + "首)");
+
+            ((CommonItemViewHolder) holder).select.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View view) {
-                    mOnItemClickListener.onItemClick(view,position);
+                public void onClick(View v) {
+
                 }
             });
-
-            holder.songChoice.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(mContext, "hello", Toast.LENGTH_SHORT).show();
-                }
-            });
-
         }
 
 
     }
 
     @Override
-    public int getItemCount() {
-        return mp3InfoItemList.size();
+    public int getItemViewType(int position) {
+        return (position == COMMON_TYPE) ? COMMON_TYPE : ITEM_TYPE;
     }
 
-    public class ItemViewHolder extends RecyclerView.ViewHolder{
+    @Override
+    public int getItemCount() {
+        return (null != mp3InfoItemList ? mp3InfoItemList.size() + 1 : 0);
+    }
+
+    public class ItemViewHolder extends RecyclerView.ViewHolder {
+        private TextView songTrack;
         private TextView songName;
         private TextView songArtist;
         private ImageView songChoice;
@@ -85,13 +110,14 @@ public class LocalSongItemAdapter extends RecyclerView.Adapter<LocalSongItemAdap
         public ItemViewHolder(View itemView) {
             super(itemView);
             rootView = itemView;
-            this.songName = (TextView) itemView.findViewById(R.id.song_name);
+            this.songName = (TextView) itemView.findViewById(R.id.song_title);
             this.songArtist = (TextView) itemView.findViewById(R.id.song_artist);
-            this.songChoice = (ImageView) itemView.findViewById(R.id.song_choice);
-
+            this.songChoice = (ImageView) itemView.findViewById(R.id.popup_menu);
+            this.songTrack = (TextView) itemView.findViewById(R.id.trackNumber);
 
 
         }
 
     }
+
 }
