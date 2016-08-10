@@ -74,6 +74,7 @@ public class AllGedanFromNeteaseListAdapter extends RecyclerView.Adapter<AllGeda
         int count = item.getPlayCount();
         if(count > 10000){
             count = count / 10000;
+
             holder.list_listener.append(" " + count + "万");
         }else {
             holder.list_listener.append(" " + item.getPlayCount());
