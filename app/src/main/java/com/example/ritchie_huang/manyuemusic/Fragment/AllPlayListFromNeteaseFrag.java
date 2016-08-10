@@ -42,7 +42,7 @@ public class AllPlayListFromNeteaseFrag extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_all_playlist, container, false);
+        View view = inflater.inflate(R.layout.recyclerview, container, false);
 
         initView(view);
         loadData();
@@ -81,7 +81,6 @@ public class AllPlayListFromNeteaseFrag extends Fragment {
                 adapter = new AllGedanFromNeteaseListAdapter(getContext(), gedanListItemListNetease);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
                 recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
-                recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL_LIST));
 
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setAdapter(adapter);
@@ -91,7 +90,7 @@ public class AllPlayListFromNeteaseFrag extends Fragment {
     }
 
     private void initView(View view) {
-        recyclerView = (RecyclerView) view.findViewById(R.id.all_playlist);
+        recyclerView = (RecyclerView) view.findViewById(R.id.father_recylerview);
         gedanListItemListNetease = new ArrayList<>();
 
 

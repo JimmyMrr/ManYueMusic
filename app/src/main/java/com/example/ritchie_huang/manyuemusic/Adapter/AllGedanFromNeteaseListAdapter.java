@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,6 @@ public class AllGedanFromNeteaseListAdapter extends RecyclerView.Adapter<AllGeda
     private List<GedanListNeteaseItem> gedanListItemListNetease;
     SpannableString spanString;
 
-    int width = 140,height = 140;
 
 
     public AllGedanFromNeteaseListAdapter(Context mContext, List<GedanListNeteaseItem> gedanListItemListNetease) {
@@ -60,8 +60,8 @@ public class AllGedanFromNeteaseListAdapter extends RecyclerView.Adapter<AllGeda
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         final GedanListNeteaseItem item = gedanListItemListNetease.get(position);
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getCoverImgUrl()+"?param=140y140"))
-                .setResizeOptions(new ResizeOptions(width, height))
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getCoverImgUrl()+"?param=200y200"))
+                .setResizeOptions(new ResizeOptions(200, 200))
                 .build();
 
         DraweeController controller = Fresco.newDraweeControllerBuilder()

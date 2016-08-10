@@ -18,14 +18,9 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.FrameLayout;
 
-import com.example.ritchie_huang.manyuemusic.Fragment.PersonalRecommendFrag;
 import com.example.ritchie_huang.manyuemusic.Fragment.HomeFrag;
 import com.example.ritchie_huang.manyuemusic.R;
-import com.example.ritchie_huang.manyuemusic.Util.PersistentCookieStore;
-import com.squareup.okhttp.OkHttpClient;
 
-import java.net.CookieManager;
-import java.net.CookiePolicy;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,7 +88,7 @@ public class HomeActivity extends AppCompatActivity {
 //            if (fragmentList.get(0).isAdded()) {
 //                transaction.hide(fragmentList.get(0)).commit();
 //            }
-            Intent intent = new Intent(getApplicationContext(), SearchSongsActivity.class);
+            Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
             startActivity(intent);
 
 

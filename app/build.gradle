@@ -31,4 +31,6 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
     compile 'com.android.support:percent:24.0.0'
     compile files('libs/gson-2.2.4.jar')
+    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+
 }

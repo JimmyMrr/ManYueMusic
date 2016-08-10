@@ -1,6 +1,7 @@
 package com.example.ritchie_huang.manyuemusic.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.ritchie_huang.manyuemusic.Activity.HotGedanDetailActivity;
+import com.example.ritchie_huang.manyuemusic.Activity.HotRadioDetailActivity;
 import com.example.ritchie_huang.manyuemusic.DataItem.RadioItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -23,13 +26,13 @@ import java.util.List;
 /**
  * Created by ritchie-huang on 16-8-8.
  */
-public class RadioAdapter extends RecyclerView.Adapter<RadioAdapter.ViewHolder> {
+public class HotRadioAdapter extends RecyclerView.Adapter<HotRadioAdapter.ViewHolder> {
     private Context mContext;
     private List<RadioItem> list;
     int width = 160,height = 160;
 
 
-    public RadioAdapter(Context mContext, List<RadioItem> list) {
+    public HotRadioAdapter(Context mContext, List<RadioItem> list) {
         this.mContext = mContext;
         this.list = list;
     }
@@ -48,7 +51,7 @@ public class RadioAdapter extends RecyclerView.Adapter<RadioAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        RadioItem item = list.get(position);
+        final RadioItem item = list.get(position);
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getPic()))
                 .setResizeOptions(new ResizeOptions(width, height))
                 .build();
@@ -60,6 +63,18 @@ public class RadioAdapter extends RecyclerView.Adapter<RadioAdapter.ViewHolder> 
         holder.album_artist.setController(controller);
         holder.album_name.setText(item.getTitle());
         holder.artist_name.setText(item.getDesc());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, HotRadioDetailActivity.class);
+                intent.putExtra("albumid",item.getAlbum_id());
+                intent.putExtra("albumart",item.getPic());
+                intent.putExtra("albumname", item.getTitle());
+                intent.putExtra("artistname", item.getDesc());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

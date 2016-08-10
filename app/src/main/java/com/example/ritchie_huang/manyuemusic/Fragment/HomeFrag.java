@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class HomeFrag extends Fragment {
 
-    private List<Fragment> fragmentList;
-    private ViewPager viewPager;
+    public static List<Fragment> fragmentList;
+    public static ViewPager viewPager;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,14 +42,16 @@ public class HomeFrag extends Fragment {
         fragmentList = new ArrayList<>();
         PersonalRecommendFrag personalRecommendFrag = new PersonalRecommendFrag();
         AllSongsFrag allSongsFrag = new AllSongsFrag();
+        AllGedanFrag allGedanFrag = new AllGedanFrag();
 //        AllPlayListFromNeteaseFrag allPlayListFromNeteaseFrag = new AllPlayListFromNeteaseFrag();
-        AllPlayListFromBMAFrag allPlayListFromBMAFrag = new AllPlayListFromBMAFrag();
+//        AllPlayListFromBMAFrag allPlayListFromBMAFrag = new AllPlayListFromBMAFrag();
         fragmentList.add(personalRecommendFrag);
         fragmentList.add(allSongsFrag);
 //        fragmentList.add(allPlayListFromNeteaseFrag);
-        fragmentList.add(allPlayListFromBMAFrag);
+//        fragmentList.add(allPlayListFromBMAFrag);
+        fragmentList.add(allGedanFrag);
         viewPager = (ViewPager) view.findViewById(R.id.container);
-        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getFragmentManager());
+        SectionsPagerAdapter adapter = new SectionsPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(0);
 

@@ -42,10 +42,22 @@
             android:name=".Activity.PlayingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activity.SearchSongsActivity"
+            android:name=".Activity.SearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activity.GedanDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Activity.HotGedanDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.HotRadioDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+
+            />
+        <activity
+            android:name=".Activity.HotNewsAlbumDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

@@ -39,7 +39,7 @@ public class AllPlayListFromBMAFrag extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.frag_all_playlist, container, false);
+        View view = inflater.inflate(R.layout.recyclerview, container, false);
         initView(view);
         return view;
     }
@@ -47,7 +47,7 @@ public class AllPlayListFromBMAFrag extends Fragment {
     private void initView(View view) {
         mList = new ArrayList<>();
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.all_playlist);
+        recyclerView = (RecyclerView) view.findViewById(R.id.father_recylerview);
         gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);

@@ -9,8 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.ritchie_huang.manyuemusic.Listener.OnRecyclerItemClickListener;
 import com.example.ritchie_huang.manyuemusic.R;
-import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
 
 import java.util.List;
 

@@ -1,6 +1,7 @@
 package com.example.ritchie_huang.manyuemusic.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.ritchie_huang.manyuemusic.Activity.HotGedanDetailActivity;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanHotItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -28,7 +30,7 @@ import java.util.List;
 /**
  * Created by ritchie-huang on 16-8-6.
  */
-public class GedanListAdapter extends RecyclerView.Adapter<GedanListAdapter.ItemViewHolder> {
+public class HotGedanListAdapter extends RecyclerView.Adapter<HotGedanListAdapter.ItemViewHolder> {
     private Context mContext;
     private List<GedanHotItem> gedanListItemList;
     SpannableString spanString;
@@ -36,7 +38,7 @@ public class GedanListAdapter extends RecyclerView.Adapter<GedanListAdapter.Item
     int width = 160,height = 160;
 
 
-    public GedanListAdapter(Context mContext, List<GedanHotItem> gedanListItemList) {
+    public HotGedanListAdapter(Context mContext, List<GedanHotItem> gedanListItemList) {
         this.mContext = mContext;
         this.gedanListItemList = gedanListItemList;
 
@@ -78,16 +80,16 @@ public class GedanListAdapter extends RecyclerView.Adapter<GedanListAdapter.Item
         }else {
             holder.list_listener.append(" " + item.getListenum());
         }
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(mContext, NetPlaylistDetailActivity.class);
-//                intent.putExtra("albumid",item.getListid());
-//                intent.putExtra("albumart",item.getPic());
-//                intent.putExtra("albumname",item.getTitle());
-//                mContext.startActivity(intent);
-//            }
-//        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, HotGedanDetailActivity.class);
+                intent.putExtra("albumid",item.getListid());
+                intent.putExtra("albumart",item.getPic());
+                intent.putExtra("albumname",item.getTitle());
+                mContext.startActivity(intent);
+            }
+        });
 
     }
 

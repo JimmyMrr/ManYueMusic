@@ -1,14 +1,11 @@
 package com.example.ritchie_huang.manyuemusic.Fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,14 +16,11 @@ import android.widget.FrameLayout;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
-import com.example.ritchie_huang.manyuemusic.Activity.HomeActivity;
-import com.example.ritchie_huang.manyuemusic.Activity.PlayingActivity;
-import com.example.ritchie_huang.manyuemusic.Activity.SearchSongsActivity;
-import com.example.ritchie_huang.manyuemusic.Adapter.GedanListAdapter;
-import com.example.ritchie_huang.manyuemusic.Adapter.NewsAlbumAdapter;
-import com.example.ritchie_huang.manyuemusic.Adapter.OnRecyclerItemClickListener;
+import com.example.ritchie_huang.manyuemusic.Adapter.HotGedanListAdapter;
+import com.example.ritchie_huang.manyuemusic.Adapter.HotNewsAlbumAdapter;
+import com.example.ritchie_huang.manyuemusic.Listener.OnRecyclerItemClickListener;
 import com.example.ritchie_huang.manyuemusic.Adapter.PersonalRecommandAdapter;
-import com.example.ritchie_huang.manyuemusic.Adapter.RadioAdapter;
+import com.example.ritchie_huang.manyuemusic.Adapter.HotRadioAdapter;
 import com.example.ritchie_huang.manyuemusic.DataItem.BannerItem;
 import com.example.ritchie_huang.manyuemusic.DataItem.Focus;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanHotItem;
@@ -44,13 +38,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by ritchie-huang on 16-8-2.
@@ -63,15 +53,15 @@ public class PersonalRecommendFrag extends Fragment {
     private FrameLayout frameLayout;
     private boolean isFromCache;
     private List<BannerItem> list;
-    private String[] moduleNames = new String[]{"推荐歌单", "最新音乐", "主播电台"};
+    private String[] moduleNames = new String[]{"推荐歌单", "最新专辑", "主播电台"};
     private int[] moduleImageIds = new int[]{R.mipmap.ic_library_music_white_36dp, R.mipmap.ic_album_white_36dp, R.mipmap.ic_radio_white_36dp};
     private List<RecyclerView.Adapter> adapterList;
     private List<GedanHotItem> gedanHotItemList;
     private List<NewsAlbumItem> newsAlbumItemList;
     private List<RadioItem> radioItemList;
-    private GedanListAdapter gedanListAdapter;
-    private NewsAlbumAdapter newsAlbumAdapter;
-    private RadioAdapter radioAdapter;
+    private HotGedanListAdapter hotGedanListAdapter;
+    private HotNewsAlbumAdapter hotNewsAlbumAdapter;
+    private HotRadioAdapter hotRadioAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -91,9 +81,9 @@ public class PersonalRecommendFrag extends Fragment {
 
 
     private void init(View view) {
-        gedanHotItemList=new ArrayList<>();
-        newsAlbumItemList=new ArrayList<>();
-        radioItemList=new ArrayList<>();
+        gedanHotItemList = new ArrayList<>();
+        newsAlbumItemList = new ArrayList<>();
+        radioItemList = new ArrayList<>();
 
         convenientBanner = (ConvenientBanner<BannerItem>) view.findViewById(R.id.convenientBanner);
         recyclerView = (RecyclerView) view.findViewById(R.id.father_recylerview);
@@ -228,12 +218,12 @@ public class PersonalRecommendFrag extends Fragment {
             @Override
             protected void onPostExecute(Void aVoid) {
                 adapterList = new ArrayList<RecyclerView.Adapter>();
-                gedanListAdapter = new GedanListAdapter(getContext(), gedanHotItemList);
-                newsAlbumAdapter = new NewsAlbumAdapter(getContext(), newsAlbumItemList);
-                radioAdapter = new RadioAdapter(getContext(), radioItemList);
-                adapterList.add(gedanListAdapter);
-                adapterList.add(newsAlbumAdapter);
-                adapterList.add(radioAdapter);
+                hotGedanListAdapter = new HotGedanListAdapter(getContext(), gedanHotItemList);
+                hotNewsAlbumAdapter = new HotNewsAlbumAdapter(getContext(), newsAlbumItemList);
+                hotRadioAdapter = new HotRadioAdapter(getContext(), radioItemList);
+                adapterList.add(hotGedanListAdapter);
+                adapterList.add(hotNewsAlbumAdapter);
+                adapterList.add(hotRadioAdapter);
 
                 adapter = new PersonalRecommandAdapter(getContext(), moduleNames, moduleImageIds, adapterList);
                 recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
@@ -244,21 +234,18 @@ public class PersonalRecommendFrag extends Fragment {
                     public void onItemClick(View view, int position) {
                         if (position == 0) {
                             //点击更多设置跳转到对应界面
-//                            FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-//
-//                            transaction.hide(HomeActivity.fragmentList.get(0)).show(HomeActivity.fragmentList.get(2)).commit();
+                            HomeFrag.viewPager.setCurrentItem(2);
+
+                        } else {
+                            view.setVisibility(View.GONE);
 //                            Intent intent = new Intent(getContext(), PlayingActivity.class);
 //                            startActivity(intent);
                         }
-                        if (position == 1) {
-                            Intent intent = new Intent(getContext(), PlayingActivity.class);
-                            startActivity(intent);
-                        }
-                        if (position == 2) {
-                            Intent intent = new Intent(getContext(), PlayingActivity.class);
-                            startActivity(intent);
-
-                        }
+//                        if (position == 2) {
+//                            Intent intent = new Intent(getContext(), PlayingActivity.class);
+//                            startActivity(intent);
+//
+//                        }
                     }
                 });
             }
