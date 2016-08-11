@@ -80,7 +80,6 @@ public class AllPlayListFromNeteaseFrag extends Fragment {
             protected void onPostExecute(Void aVoid) {
                 adapter = new AllGedanFromNeteaseListAdapter(getContext(), gedanListItemListNetease);
                 recyclerView.setLayoutManager(new GridLayoutManager(getContext(),2));
-                recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
 
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setAdapter(adapter);

@@ -45,7 +45,7 @@
             android:name=".Activity.SearchActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Activity.GedanDetailActivity"
+            android:name=".Activity.BMAGedanDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <activity
@@ -58,6 +58,10 @@
             />
         <activity
             android:name=".Activity.HotNewsAlbumDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".Activity.NeteaseGedanDetailActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

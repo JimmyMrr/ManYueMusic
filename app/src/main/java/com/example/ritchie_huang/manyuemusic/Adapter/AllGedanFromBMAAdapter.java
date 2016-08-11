@@ -14,8 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.ritchie_huang.manyuemusic.Activity.GedanDetailActivity;
-import com.example.ritchie_huang.manyuemusic.DataItem.GedanBMAItem;
+import com.example.ritchie_huang.manyuemusic.Activity.BMAGedanDetailActivity;
+import com.example.ritchie_huang.manyuemusic.DataItem.GedanListBMAItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
@@ -31,13 +31,13 @@ import java.util.List;
  */
 public class AllGedanFromBMAAdapter extends RecyclerView.Adapter<AllGedanFromBMAAdapter.ItemViewHolder> {
     private Context mContext;
-    private List<GedanBMAItem> gedanListItemList;
+    private List<GedanListBMAItem> gedanListItemList;
     SpannableString spanString;
 
     int width = 300, height = 300;
 
 
-    public AllGedanFromBMAAdapter(Context mContext, List<GedanBMAItem> gedanListItemList) {
+    public AllGedanFromBMAAdapter(Context mContext, List<GedanListBMAItem> gedanListItemList) {
         this.mContext = mContext;
         this.gedanListItemList = gedanListItemList;
 
@@ -58,7 +58,7 @@ public class AllGedanFromBMAAdapter extends RecyclerView.Adapter<AllGedanFromBMA
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        final GedanBMAItem item = gedanListItemList.get(position);
+        final GedanListBMAItem item = gedanListItemList.get(position);
         ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getPic_300()))
                 .setResizeOptions(new ResizeOptions(width, height))
                 .build();
@@ -80,7 +80,7 @@ public class AllGedanFromBMAAdapter extends RecyclerView.Adapter<AllGedanFromBMA
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, GedanDetailActivity.class);
+                Intent intent = new Intent(mContext, BMAGedanDetailActivity.class);
                 intent.putExtra("albumid",item.getListid());
                 intent.putExtra("albumart",item.getPic_300());
                 intent.putExtra("albumname",item.getTitle());
@@ -91,7 +91,7 @@ public class AllGedanFromBMAAdapter extends RecyclerView.Adapter<AllGedanFromBMA
 
     }
 
-    public void update(List<GedanBMAItem> list) {
+    public void update(List<GedanListBMAItem> list) {
         this.gedanListItemList = list;
         notifyDataSetChanged();
     }

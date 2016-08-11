@@ -3,7 +3,7 @@ package com.example.ritchie_huang.manyuemusic.DataItem;
 /**
  * Created by ritchie-huang on 16-8-8.
  */
-public class GedanBMAItem {
+public class GedanListBMAItem {
     /**
      * listid : 6574
      * listenum : 58807

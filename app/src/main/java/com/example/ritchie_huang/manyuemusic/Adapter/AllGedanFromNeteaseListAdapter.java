@@ -1,6 +1,7 @@
 package com.example.ritchie_huang.manyuemusic.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.ritchie_huang.manyuemusic.Activity.NeteaseGedanDetailActivity;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanListNeteaseItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -60,7 +62,7 @@ public class AllGedanFromNeteaseListAdapter extends RecyclerView.Adapter<AllGeda
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         final GedanListNeteaseItem item = gedanListItemListNetease.get(position);
-        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getCoverImgUrl()+"?param=200y200"))
+        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(item.getCoverImgUrl()))
                 .setResizeOptions(new ResizeOptions(200, 200))
                 .build();
 
@@ -79,16 +81,17 @@ public class AllGedanFromNeteaseListAdapter extends RecyclerView.Adapter<AllGeda
         }else {
             holder.list_listener.append(" " + item.getPlayCount());
         }
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(mContext, NetPlaylistDetailActivity.class);
-//                intent.putExtra("albumid",item.getListid());
-//                intent.putExtra("albumart",item.getPic());
-//                intent.putExtra("albumname",item.getTitle());
-//                mContext.startActivity(intent);
-//            }
-//        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(mContext, NeteaseGedanDetailActivity.class);
+                intent.putExtra("albumid",item.getId()+"");
+                intent.putExtra("albumart",item.getCoverImgUrl());
+                intent.putExtra("albumname",item.getName());
+                intent.putExtra("albumdesc", item.getDescription());
+                mContext.startActivity(intent);
+            }
+        });
 
     }
 

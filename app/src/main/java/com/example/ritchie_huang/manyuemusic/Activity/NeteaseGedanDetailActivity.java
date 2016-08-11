@@ -23,9 +23,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanBMADetailItem;
+import com.example.ritchie_huang.manyuemusic.DataItem.GedanNeteaseDetailItem;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanSrcBMA;
 import com.example.ritchie_huang.manyuemusic.DataItem.MusicDetailNet;
 import com.example.ritchie_huang.manyuemusic.R;
+import com.example.ritchie_huang.manyuemusic.Util.Api;
 import com.example.ritchie_huang.manyuemusic.Util.BMA;
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
 import com.example.ritchie_huang.manyuemusic.Util.ImageUtils;
@@ -46,12 +48,14 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HotGedanDetailActivity extends AppCompatActivity {
-
+/**
+ * Created by ritchie-huang on 16-8-11.
+ */
+public class NeteaseGedanDetailActivity extends AppCompatActivity {
     Gson mGson;
     private String mPlayListId;
     private String mAlbumPath,mAlbumName, mAlbumDes;
-    private List<GedanBMADetailItem> mList;
+    private List<GedanNeteaseDetailItem> mList;
     private SimpleDraweeView albumSmallPic;
     private ImageView albumArt;
     private TextView albumName,albumDes;
@@ -81,7 +85,7 @@ public class HotGedanDetailActivity extends AppCompatActivity {
     private void initViews() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.menu_toolbar_forplaying);
-        toolbar.setTitle("推荐歌单");
+        toolbar.setTitle("");
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_36dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -138,7 +142,7 @@ public class HotGedanDetailActivity extends AppCompatActivity {
             Drawable drawable = null;
 
             try {
-                drawable = ImageUtils.createBlurredImageFromBitmap(loadedImage[0], HotGedanDetailActivity.this, 20);
+                drawable = ImageUtils.createBlurredImageFromBitmap(loadedImage[0], NeteaseGedanDetailActivity.this, 20);
 //                drawable = ImageUtils.createBlurredImageFromBitmap(ImageUtils.getBitmapFromDrawable(Drawable.createFromStream(new URL(albumPath).openStream(), "src")),
 //                        NetPlaylistDetailActivity.this, 30);
             } catch (Exception e) {
@@ -180,15 +184,11 @@ public class HotGedanDetailActivity extends AppCompatActivity {
             protected Void doInBackground(final Void... unused) {
 
                 try {
-                    JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.GeDan.geDanInfo(mPlayListId + ""));
-                    gedanSrcBMA = mGson.fromJson(jsonObject.toString(), GedanSrcBMA.class);
-                    JsonArray pArray = jsonObject.get("content").getAsJsonArray();
-                    int plen = pArray.size();
+                    JsonObject jsonObject = HttpUtil.getResposeJsonObject(Api.GEDAN_DETAIL+mPlayListId+"");
+                    GedanNeteaseDetailItem geDanGeInfo = mGson.fromJson(jsonObject, GedanNeteaseDetailItem.class);
 
-                    for(int i = 0;i < plen; i++){
-                        GedanBMADetailItem geDanGeInfo = mGson.fromJson(pArray.get(i),GedanBMADetailItem.class);
-                        mList.add(geDanGeInfo);
-                    }
+
+                    mList.add(geDanGeInfo);
                 } catch (NullPointerException e) {
                     e.printStackTrace();
                 }
@@ -198,9 +198,9 @@ public class HotGedanDetailActivity extends AppCompatActivity {
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                mAdapter = new PlaylistDetailAdapter(HotGedanDetailActivity.this, mList);
+                mAdapter = new PlaylistDetailAdapter(NeteaseGedanDetailActivity.this, mList);
                 mRecyclerView.setAdapter(mAdapter);
-                mRecyclerView.addItemDecoration(new DividerItemDecoration(HotGedanDetailActivity.this, DividerItemDecoration.VERTICAL_LIST));
+                mRecyclerView.addItemDecoration(new DividerItemDecoration(NeteaseGedanDetailActivity.this, DividerItemDecoration.VERTICAL_LIST));
             }
         }.execute();
 
@@ -245,11 +245,11 @@ public class HotGedanDetailActivity extends AppCompatActivity {
     class PlaylistDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final static int FIRST_ITEM = 0;
         final static int ITEM = 1;
-        private List<GedanBMADetailItem> arraylist;
+        private List<GedanNeteaseDetailItem> arraylist;
         private long playlistId;
         private Activity mContext;
 
-        public PlaylistDetailAdapter(Activity context, List<GedanBMADetailItem> mList) {
+        public PlaylistDetailAdapter(Activity context, List<GedanNeteaseDetailItem> mList) {
             this.arraylist = mList;
             this.mContext = context;
         }
@@ -257,9 +257,9 @@ public class HotGedanDetailActivity extends AppCompatActivity {
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
             if (viewType == FIRST_ITEM) {
-                return new CommonItemViewHolder(LayoutInflater.from(HotGedanDetailActivity.this).inflate(R.layout.common_item, viewGroup, false));
+                return new CommonItemViewHolder(LayoutInflater.from(NeteaseGedanDetailActivity.this).inflate(R.layout.common_item, viewGroup, false));
             } else {
-                return new ItemViewHolder(LayoutInflater.from(HotGedanDetailActivity.this).inflate(R.layout.fragment_playlist_detail_item, viewGroup, false));
+                return new ItemViewHolder(LayoutInflater.from(NeteaseGedanDetailActivity.this).inflate(R.layout.fragment_playlist_detail_item, viewGroup, false));
             }
 
         }
@@ -274,10 +274,10 @@ public class HotGedanDetailActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder itemHolder, final int i) {
             if (itemHolder instanceof ItemViewHolder) {
-                final GedanBMADetailItem localItem = arraylist.get(i - 1);
+                final GedanNeteaseDetailItem.ResultBean.TracksBean localItem = arraylist.get(0).getResult().getTracks().get(i-1);
                 ((ItemViewHolder) itemHolder).trackNumber.setText(i + "");
-                ((ItemViewHolder) itemHolder).title.setText(localItem.getTitle());
-                ((ItemViewHolder) itemHolder).artist.setText(localItem.getAuthor());
+                ((ItemViewHolder) itemHolder).title.setText(localItem.getName());
+                ((ItemViewHolder) itemHolder).artist.setText(localItem.getArtists().get(0).getName());
                 ((ItemViewHolder) itemHolder).menu.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -287,7 +287,7 @@ public class HotGedanDetailActivity extends AppCompatActivity {
 
             } else if (itemHolder instanceof CommonItemViewHolder) {
 
-                ((CommonItemViewHolder) itemHolder).textView.setText("(共" + arraylist.size() + "首)");
+                ((CommonItemViewHolder) itemHolder).textView.setText("(共" + arraylist.get(0).getResult().getTracks().size() + "首)");
 
                 ((CommonItemViewHolder) itemHolder).select.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -302,10 +302,10 @@ public class HotGedanDetailActivity extends AppCompatActivity {
 
         @Override
         public int getItemCount() {
-            return (null != arraylist ? arraylist.size() + 1 : 0);
+            return (null != (arraylist.get(0).getResult().getTracks())) ? (arraylist.get(0).getResult().getTracks().size() + 1) : 0;
         }
 
-        public void updateDataSet(long playlistid, ArrayList<GedanBMADetailItem> arraylist) {
+        public void updateDataSet(long playlistid, ArrayList<GedanNeteaseDetailItem> arraylist) {
             this.arraylist = arraylist;
             this.playlistId = playlistid;
         }
@@ -334,10 +334,10 @@ public class HotGedanDetailActivity extends AppCompatActivity {
 
                         try{
 
-                            JsonArray jsonArray = HttpUtil.getResposeJsonObject(BMA.Song.songInfo(BMA.Song.songInfo(arraylist.get(getAdapterPosition()).getSong_id()))).get("songurl").getAsJsonObject()
-                                    .get("url").getAsJsonArray();
+//                            JsonArray jsonArray = HttpUtil.getResposeJsonObject(BMA.Song.songInfo(BMA.Song.songInfo(arraylist.get(getAdapterPosition()).getSong_id()))).get("songurl").getAsJsonObject()
+//                                    .get("url").getAsJsonArray();
 
-                            int len = jsonArray.size();
+//                            int len = jsonArray.size();
 //                                                for(int i = 0;i < len; i++){
 //                                                    MusicNet musicNet = gson.fromJson(jsonArray.get(i),MusicNet.class);
 //                                                }
@@ -360,5 +360,4 @@ public class HotGedanDetailActivity extends AppCompatActivity {
 
         }
     }
-
 }

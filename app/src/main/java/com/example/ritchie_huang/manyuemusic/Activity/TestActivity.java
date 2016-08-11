@@ -39,12 +39,12 @@ public class TestActivity extends Activity {
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-//            in = (InputStream) msg.obj;
+            in = (InputStream) msg.obj;
 
 //            textView.setText((String)msg.obj);
 //            Log.d("TestActivity", (String)msg.obj);
-            textView.setText((String)msg.obj);
-//            new save(in).start();
+//            textView.setText((String)msg.obj);
+            new save(in).start();
 
             super.handleMessage(msg);
         }
@@ -59,7 +59,7 @@ public class TestActivity extends Activity {
         client = new OkHttpClient();
         client.setCookieHandler(new java.net.CookieManager(new PersistentCookieStore(getApplicationContext()), CookiePolicy.ACCEPT_ALL));
 
-        String url = "http://music.163.com/api/playlist/list?cat=全部&order=hot&offset=0&total=true&limit=10000";
+        String url = "http://music.163.com/api/playlist/detail?id=426782554";
         RequestBody formbody = new FormEncodingBuilder()
                 .build();
         Request request = new Request.Builder()
@@ -78,7 +78,7 @@ public class TestActivity extends Activity {
             @Override
             public void onResponse(Response response) throws IOException {
                 Message message = Message.obtain();
-                message.obj = response.body().string();
+                message.obj = response.body().byteStream();
                 handler.sendMessage(message);
             }
         });
@@ -100,7 +100,7 @@ public class TestActivity extends Activity {
         }
 
         public void savetoFile() {
-            File file = new File(Environment.getExternalStorageDirectory(), "playlists");
+            File file = new File(Environment.getExternalStorageDirectory(), "playlistsdetail");
             try {
                 FileOutputStream fos = new FileOutputStream(file);
                 byte[] b = new byte[1024];

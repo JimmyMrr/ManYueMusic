@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ritchie_huang.manyuemusic.Adapter.AllGedanFromBMAAdapter;
-import com.example.ritchie_huang.manyuemusic.DataItem.GedanBMAItem;
+import com.example.ritchie_huang.manyuemusic.DataItem.GedanListBMAItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Util.BMA;
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
@@ -32,7 +32,7 @@ public class AllPlayListFromBMAFrag extends Fragment {
     private AllGedanFromBMAAdapter mAdapter;
     private RecyclerView recyclerView;
     private int lastVisibleItem;
-    private List<GedanBMAItem> mList;
+    private List<GedanListBMAItem> mList;
     int pageCount = 1;
     Gson gson;
 
@@ -51,7 +51,6 @@ public class AllPlayListFromBMAFrag extends Fragment {
         gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -99,7 +98,7 @@ public class AllPlayListFromBMAFrag extends Fragment {
             int plen = pArray.size();
 
             for (int i = 0; i < plen; i++) {
-                GedanBMAItem gedan = gson.fromJson(pArray.get(i), GedanBMAItem.class);
+                GedanListBMAItem gedan = gson.fromJson(pArray.get(i), GedanListBMAItem.class);
                 mList.add(gedan);
             }
 
@@ -133,7 +132,7 @@ public class AllPlayListFromBMAFrag extends Fragment {
                 int plen = pArray.size();
 
                 for (int i = 0; i < plen; i++) {
-                    GedanBMAItem item = gson.fromJson(pArray.get(i), GedanBMAItem.class);
+                    GedanListBMAItem item = gson.fromJson(pArray.get(i), GedanListBMAItem.class);
                     mList.add(item);
                 }
 

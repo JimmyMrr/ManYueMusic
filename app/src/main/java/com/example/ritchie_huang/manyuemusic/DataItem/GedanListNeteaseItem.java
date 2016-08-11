@@ -152,7 +152,7 @@ public class GedanListNeteaseItem {
         }
 
         public void setCoverImgUrl(String coverImgUrl) {
-            this.coverImgUrl = coverImgUrl;
+            this.coverImgUrl = coverImgUrl+"?param=200y200";
         }
 
         public long getCoverImgId() {

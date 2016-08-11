@@ -199,6 +199,7 @@ public class PersonalRecommendFrag extends Fragment {
                 }
 
 
+                //最热Radio
                 try {
                     JsonObject result2 = HttpUtil.getResposeJsonObject(BMA.Radio.recommendRadioList(6), getContext(), isFromCache);
                     JsonArray array2 = result2.get("list").getAsJsonArray();
