@@ -34,10 +34,14 @@ import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
 import com.facebook.binaryresource.BinaryResource;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
+import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -46,6 +50,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.fresco.processors.BlurPostprocessor;
+
 public class HotGedanDetailActivity extends AppCompatActivity {
 
     Gson mGson;
@@ -53,7 +59,7 @@ public class HotGedanDetailActivity extends AppCompatActivity {
     private String mAlbumPath,mAlbumName, mAlbumDes;
     private List<GedanBMADetailItem> mList;
     private SimpleDraweeView albumSmallPic;
-    private ImageView albumArt;
+    private SimpleDraweeView albumArt;
     private TextView albumName,albumDes;
     private RecyclerView mRecyclerView;
     private PlaylistDetailAdapter mAdapter;
@@ -95,7 +101,7 @@ public class HotGedanDetailActivity extends AppCompatActivity {
         albumDes = (TextView) findViewById(R.id.album_details);
         albumName = (TextView) findViewById(R.id.album_title);
         albumSmallPic = (SimpleDraweeView) findViewById(R.id.albumArtSmall);
-        albumArt = (ImageView) findViewById(R.id.album_art);
+        albumArt = (SimpleDraweeView) findViewById(R.id.album_art);
 
         albumDes.setText(mAlbumDes);
 
@@ -114,61 +120,25 @@ public class HotGedanDetailActivity extends AppCompatActivity {
     private void setAlbumArt() {
         albumName.setText(mAlbumName);
         albumSmallPic.setImageURI(Uri.parse(mAlbumPath));
-        try {
-            //drawable = Drawable.createFromStream( new URL(albumPath).openStream(),"src");
-            ImageRequest imageRequest=ImageRequest.fromUri(mAlbumPath);
-            CacheKey cacheKey= DefaultCacheKeyFactory.getInstance()
-                    .getEncodedCacheKey(imageRequest,null);
-            BinaryResource resource = ImagePipelineFactory.getInstance()
-                    .getMainDiskStorageCache().getResource(cacheKey);
-            File file=((FileBinaryResource)resource).getFile();
-            new setBlurredAlbumArt().execute(ImageUtils.getArtworkQuick(file, 300, 300));
+
+        ImageRequest request =
+                ImageRequestBuilder.fromRequest(ImageRequest.fromUri(Uri.parse(mAlbumPath)))
+                        .setResizeOptions(new ResizeOptions(50,50))
+                        .setPostprocessor(new BlurPostprocessor(this, 12, 2))
+                        .build();
+
+        PipelineDraweeController controller =
+                (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                        .setImageRequest(request)
+                        .setOldController(albumArt.getController())
+                        .build();
+        albumArt.setController(controller);
 
 
-        } catch (Exception e) {
-
-        }
 
     }
 
-    private class setBlurredAlbumArt extends AsyncTask<Bitmap, Void, Drawable> {
 
-        @Override
-        protected Drawable doInBackground(Bitmap... loadedImage) {
-            Drawable drawable = null;
-
-            try {
-                drawable = ImageUtils.createBlurredImageFromBitmap(loadedImage[0], HotGedanDetailActivity.this, 20);
-//                drawable = ImageUtils.createBlurredImageFromBitmap(ImageUtils.getBitmapFromDrawable(Drawable.createFromStream(new URL(albumPath).openStream(), "src")),
-//                        NetPlaylistDetailActivity.this, 30);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return drawable;
-        }
-
-        @Override
-        protected void onPostExecute(Drawable result) {
-            if (result != null) {
-                if (albumArt.getDrawable() != null) {
-                    final TransitionDrawable td =
-                            new TransitionDrawable(new Drawable[]{
-                                    albumArt.getDrawable(),
-                                    result
-                            });
-                    albumArt.setImageDrawable(td);
-                    td.startTransition(200);
-
-                } else {
-                    albumArt.setImageDrawable(result);
-                }
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-    }
 
     GedanSrcBMA gedanSrcBMA;
     MusicDetailNet musicDetailNet;

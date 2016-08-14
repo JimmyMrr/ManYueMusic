@@ -58,7 +58,7 @@ public class ImageUtils {
         final android.renderscript.Allocation input = android.renderscript.Allocation.createFromBitmap(rs, blurTemplate);
         final android.renderscript.Allocation output = android.renderscript.Allocation.createTyped(rs, input.getType());
         final android.renderscript.ScriptIntrinsicBlur script = android.renderscript.ScriptIntrinsicBlur.create(rs, android.renderscript.Element.U8_4(rs));
-        script.setRadius(8f);
+        script.setRadius(12f);
         script.setInput(input);
         script.forEach(output);
         output.copyTo(blurTemplate);

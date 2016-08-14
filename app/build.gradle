@@ -32,5 +32,5 @@ dependencies {
     compile 'com.android.support:percent:24.0.0'
     compile files('libs/gson-2.2.4.jar')
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
-
+    compile 'jp.wasabeef:fresco-processors:2.0.0'
 }

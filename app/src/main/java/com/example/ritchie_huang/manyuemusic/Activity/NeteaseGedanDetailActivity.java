@@ -36,17 +36,24 @@ import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
 import com.facebook.binaryresource.BinaryResource;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
+import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import jp.wasabeef.fresco.processors.BlurPostprocessor;
 
 /**
  * Created by ritchie-huang on 16-8-11.
@@ -54,15 +61,16 @@ import java.util.List;
 public class NeteaseGedanDetailActivity extends AppCompatActivity {
     Gson mGson;
     private String mPlayListId;
-    private String mAlbumPath,mAlbumName, mAlbumDes;
+    private String mAlbumPath, mAlbumName, mAlbumDes;
     private List<GedanNeteaseDetailItem> mList;
     private SimpleDraweeView albumSmallPic;
-    private ImageView albumArt;
-    private TextView albumName,albumDes;
+    private SimpleDraweeView albumArt;
+    private TextView albumName, albumDes;
     private RecyclerView mRecyclerView;
     private PlaylistDetailAdapter mAdapter;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     MediaPlayer mediaPlayer = new MediaPlayer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,7 +107,7 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
         albumDes = (TextView) findViewById(R.id.album_details);
         albumName = (TextView) findViewById(R.id.album_title);
         albumSmallPic = (SimpleDraweeView) findViewById(R.id.albumArtSmall);
-        albumArt = (ImageView) findViewById(R.id.album_art);
+        albumArt = (SimpleDraweeView) findViewById(R.id.album_art);
 
         albumDes.setText(mAlbumDes);
 
@@ -118,61 +126,22 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
     private void setAlbumArt() {
         albumName.setText(mAlbumName);
         albumSmallPic.setImageURI(Uri.parse(mAlbumPath));
-        try {
-            //drawable = Drawable.createFromStream( new URL(albumPath).openStream(),"src");
-            ImageRequest imageRequest=ImageRequest.fromUri(mAlbumPath);
-            CacheKey cacheKey= DefaultCacheKeyFactory.getInstance()
-                    .getEncodedCacheKey(imageRequest,null);
-            BinaryResource resource = ImagePipelineFactory.getInstance()
-                    .getMainDiskStorageCache().getResource(cacheKey);
-            File file=((FileBinaryResource)resource).getFile();
-            new setBlurredAlbumArt().execute(ImageUtils.getArtworkQuick(file, 300, 300));
 
+        ImageRequest request =
+                ImageRequestBuilder.fromRequest(ImageRequest.fromUri(Uri.parse(mAlbumPath)))
+                        .setResizeOptions(new ResizeOptions(50,50))
+                        .setPostprocessor(new BlurPostprocessor(this, 12, 2))
+                        .build();
 
-        } catch (Exception e) {
-
-        }
+        PipelineDraweeController controller =
+                (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                        .setImageRequest(request)
+                        .setOldController(albumArt.getController())
+                        .build();
+        albumArt.setController(controller);
 
     }
 
-    private class setBlurredAlbumArt extends AsyncTask<Bitmap, Void, Drawable> {
-
-        @Override
-        protected Drawable doInBackground(Bitmap... loadedImage) {
-            Drawable drawable = null;
-
-            try {
-                drawable = ImageUtils.createBlurredImageFromBitmap(loadedImage[0], NeteaseGedanDetailActivity.this, 20);
-//                drawable = ImageUtils.createBlurredImageFromBitmap(ImageUtils.getBitmapFromDrawable(Drawable.createFromStream(new URL(albumPath).openStream(), "src")),
-//                        NetPlaylistDetailActivity.this, 30);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return drawable;
-        }
-
-        @Override
-        protected void onPostExecute(Drawable result) {
-            if (result != null) {
-                if (albumArt.getDrawable() != null) {
-                    final TransitionDrawable td =
-                            new TransitionDrawable(new Drawable[]{
-                                    albumArt.getDrawable(),
-                                    result
-                            });
-                    albumArt.setImageDrawable(td);
-                    td.startTransition(200);
-
-                } else {
-                    albumArt.setImageDrawable(result);
-                }
-            }
-        }
-
-        @Override
-        protected void onPreExecute() {
-        }
-    }
 
     GedanSrcBMA gedanSrcBMA;
     MusicDetailNet musicDetailNet;
@@ -184,7 +153,7 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
             protected Void doInBackground(final Void... unused) {
 
                 try {
-                    JsonObject jsonObject = HttpUtil.getResposeJsonObject(Api.GEDAN_DETAIL+mPlayListId+"");
+                    JsonObject jsonObject = HttpUtil.getResposeJsonObject(Api.GEDAN_DETAIL + mPlayListId + "");
                     GedanNeteaseDetailItem geDanGeInfo = mGson.fromJson(jsonObject, GedanNeteaseDetailItem.class);
 
 
@@ -209,7 +178,7 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_toolbar_forplaying,menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar_forplaying, menu);
 
         return true;
     }
@@ -228,7 +197,6 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
@@ -274,7 +242,7 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final RecyclerView.ViewHolder itemHolder, final int i) {
             if (itemHolder instanceof ItemViewHolder) {
-                final GedanNeteaseDetailItem.ResultBean.TracksBean localItem = arraylist.get(0).getResult().getTracks().get(i-1);
+                final GedanNeteaseDetailItem.ResultBean.TracksBean localItem = arraylist.get(0).getResult().getTracks().get(i - 1);
                 ((ItemViewHolder) itemHolder).trackNumber.setText(i + "");
                 ((ItemViewHolder) itemHolder).title.setText(localItem.getName());
                 ((ItemViewHolder) itemHolder).artist.setText(localItem.getArtists().get(0).getName());
@@ -282,6 +250,21 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
 
+
+                    }
+                });
+
+                itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                        mediaPlayer.reset();
+//                        try {
+//                            mediaPlayer.setDataSource(localItem.getMp3Url());
+//                            mediaPlayer.prepare();
+//                            mediaPlayer.start();
+//                        } catch (IOException e) {
+//                            e.printStackTrace();
+//                        }
                     }
                 });
 
@@ -311,7 +294,6 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
         }
 
 
-
         public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
             protected TextView title, artist, trackNumber;
             protected ImageView menu;
@@ -332,7 +314,8 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
                     @Override
                     public void run() {
 
-                        try{
+                        try {
+
 
 //                            JsonArray jsonArray = HttpUtil.getResposeJsonObject(BMA.Song.songInfo(BMA.Song.songInfo(arraylist.get(getAdapterPosition()).getSong_id()))).get("songurl").getAsJsonObject()
 //                                    .get("url").getAsJsonArray();
@@ -342,14 +325,14 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
 //                                                    MusicNet musicNet = gson.fromJson(jsonArray.get(i),MusicNet.class);
 //                                                }
                             //   MusicNet musicNet = gson.fromJson(jsonArray.get(3),MusicNet.class);
-
-                            mediaPlayer.reset();
-                            mediaPlayer.setDataSource(musicDetailNet.getShow_link());
-                            mediaPlayer.prepare();
-                            mediaPlayer.start();
+//
+//                            mediaPlayer.reset();
+//                            mediaPlayer.setDataSource();
+//                            mediaPlayer.prepare();
+//                            mediaPlayer.start();
 //                            MusicPlayer.clearQueue();
 
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 

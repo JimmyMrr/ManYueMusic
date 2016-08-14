@@ -24,7 +24,6 @@ public class CommonItemViewHolder extends RecyclerView.ViewHolder implements Vie
     }
 
     public void onClick(View v) {
-        //// TODO: 2016/1/20
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override

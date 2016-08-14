@@ -20,4 +20,25 @@ public class Constants {
     //广播动作-下一首
     public static final String ACTION_NEXT = "com.ritchie.action.ACTION_NEXT";
 
+
+    //服务发送动作
+    //更新
+    public static final String UPDATE_ACTION = "com.ritchie.action.SERVICE_UPDATE_ACTION";
+    //控制
+    public static final String CONTROL_ACTION = "com.ritchie.action.SERVICE_CONTROL_ACTION";
+    //更新播放时间
+    public static final String MUSIC_CURRENT = "com.ritchie.action.SERVICE_MUSIC_CURRENT";
+    //更新音乐长度
+    public static final String MUSIC_DURATION = "com.ritchie.action.SERVICE_MUSIC_DURATION";
+
+
+
+
+
+
+    //歌曲播放状态
+    public static final int STATUS_ORDER = 1;
+    public static final int STATUS_RANDOM = 2;
+    public static final int STATUS_LOOP_ONE = 3;
+
 }

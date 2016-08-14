@@ -38,6 +38,8 @@
         <!--<category android:name="android.intent.category.LAUNCHER" />-->
         <!--</intent-filter>-->
         <!--</activity>-->
+        <service android:name=".Service.PlayService"/>
+
         <activity
             android:name=".Activity.PlayingActivity"
             android:theme="@style/AppTheme.NoActionBar" />
