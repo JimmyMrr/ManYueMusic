@@ -1,6 +1,9 @@
 package com.example.ritchie_huang.manyuemusic.Activity;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -9,6 +12,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +31,7 @@ import com.example.ritchie_huang.manyuemusic.DataItem.GedanNeteaseDetailItem;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanSrcBMA;
 import com.example.ritchie_huang.manyuemusic.DataItem.MusicDetailNet;
 import com.example.ritchie_huang.manyuemusic.R;
+import com.example.ritchie_huang.manyuemusic.Service.PlayService;
 import com.example.ritchie_huang.manyuemusic.Util.Api;
 import com.example.ritchie_huang.manyuemusic.Util.BMA;
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
@@ -69,6 +74,10 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private PlaylistDetailAdapter mAdapter;
     private CollapsingToolbarLayout collapsingToolbarLayout;
+    ServiceConnection conn;
+
+
+    private PlayService.PlayMusicBinder mBinder;
     MediaPlayer mediaPlayer = new MediaPlayer();
 
     @Override
@@ -85,6 +94,22 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gedandetail);
 
         initViews();
+
+        Intent intent = new Intent(this, PlayService.class);
+
+
+        conn = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+                mBinder = (PlayService.PlayMusicBinder) iBinder;
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName componentName) {
+
+            }
+        };
+        bindService(intent,conn,0);
 
 
     }
@@ -210,6 +235,12 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unbindService(conn);
+    }
+
     class PlaylistDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         final static int FIRST_ITEM = 0;
         final static int ITEM = 1;
@@ -257,6 +288,17 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
                 itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+
+                        new Thread(){
+
+                            @Override
+                            public void run() {
+                                super.run();
+
+                                mBinder.startPlay(localItem.getMp3Url());
+                            }
+                        }.start();
+
 //                        mediaPlayer.reset();
 //                        try {
 //                            mediaPlayer.setDataSource(localItem.getMp3Url());
@@ -275,6 +317,7 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
                 ((CommonItemViewHolder) itemHolder).select.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+
 
                     }
                 });
@@ -315,6 +358,7 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
                     public void run() {
 
                         try {
+
 
 
 //                            JsonArray jsonArray = HttpUtil.getResposeJsonObject(BMA.Song.songInfo(BMA.Song.songInfo(arraylist.get(getAdapterPosition()).getSong_id()))).get("songurl").getAsJsonObject()

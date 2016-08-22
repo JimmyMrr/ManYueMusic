@@ -133,17 +133,18 @@ public class PlayService<T> extends Service {
 
 
 
-    private class PlayMusicBinder extends Binder {
+    public class PlayMusicBinder extends Binder {
         private void setPlayList(List<T> list) {
             mSongList = list;
         }
 
-        private void startPlay(String dataSource) {
+        public void startPlay(String dataSource) {
             mMusicPath = dataSource;
             mMediaPlayer.reset();
             try {
                 mMediaPlayer.setDataSource(dataSource);
                 mMediaPlayer.prepare();
+                mMediaPlayer.start();
                 mMediaPlayer.setOnCompletionListener(new MyCompletionListener());
 
             } catch (IOException e) {

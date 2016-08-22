@@ -22,14 +22,14 @@ android {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.0.0'
-    compile 'com.android.support:design:24.0.0'
+    compile 'com.android.support:appcompat-v7:24.2.0'
+    compile 'com.android.support:design:24.2.0'
     compile files('libs/jsoup-1.9.2.jar')
     compile 'com.facebook.fresco:fresco:0.12.0'
     compile 'com.bigkoo:convenientbanner:2.0.5'
     compile 'com.squareup.okhttp:okhttp:2.7.5'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
-    compile 'com.android.support:percent:24.0.0'
+    compile 'com.android.support:percent:24.2.0'
     compile files('libs/gson-2.2.4.jar')
     compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
     compile 'jp.wasabeef:fresco-processors:2.0.0'
