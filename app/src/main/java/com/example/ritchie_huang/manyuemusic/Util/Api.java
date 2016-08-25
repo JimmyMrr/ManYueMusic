@@ -12,11 +12,14 @@ public class Api {
     public static String GEDAN_DETAIL = "http://music.163.com/api/playlist/detail?id=";
     //http://music.163.com/api/song/detail/?id=xxx&ids=[xxx];
     public static String SONG_URL = "http://music.163.com/api/song/detail/?id=";
-    //http://music.163.com/api/song/lyric?os=osx&id=xxx&lv=-1&kv=-1&tv=-1;
-    public static String SONG_LRC = "http://music.163.com/api/song/lyric?os=osx&id=";
 
 
     //post请求
+
+    //http://music.163.com/api/song/lyric?os=osx&id=xxx&lv=-1&kv=-1&tv=-1;
+    public static String SONG_LRC = "http://music.163.com/api/song/lyric/";
+
+
     public static String SEARCH = "http://music.163.com/api/search/get";
 //    data = {
 //            's': s,

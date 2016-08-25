@@ -39,12 +39,12 @@ public class TestActivity extends Activity {
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
-            in = (InputStream) msg.obj;
+//            in = (InputStream) msg.obj;
 
+            textView.setText((String)msg.obj);
+            Log.d("TestActivity", (String)msg.obj);
 //            textView.setText((String)msg.obj);
-//            Log.d("TestActivity", (String)msg.obj);
-//            textView.setText((String)msg.obj);
-            new save(in).start();
+//            new save(in).start();
 
             super.handleMessage(msg);
         }
@@ -61,9 +61,15 @@ public class TestActivity extends Activity {
 
         String url = "http://music.163.com/api/playlist/detail?id=426782554";
         RequestBody formbody = new FormEncodingBuilder()
+                .add("os", "pc")
+                .add("id", "208920")
+                .add("lv", String.valueOf(-1))
+                .add("kv", String.valueOf(-1))
+                .add("tv", String.valueOf(-1))
                 .build();
         Request request = new Request.Builder()
-                .url(Api.GEDAN_DETAIL+"426782554")
+                .url(Api.SONG_LRC)
+                .post(formbody)
                 .addHeader("Referer","http://music.163.com/")
                 .addHeader("Cookie", "appver=1.5.0.75771")
                 .build();
@@ -78,7 +84,7 @@ public class TestActivity extends Activity {
             @Override
             public void onResponse(Response response) throws IOException {
                 Message message = Message.obtain();
-                message.obj = response.body().byteStream();
+                message.obj = response.body().string();
                 handler.sendMessage(message);
             }
         });

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,10 +16,18 @@ import android.widget.TextView;
 import android.widget.SeekBar;
 
 import com.example.ritchie_huang.manyuemusic.R;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.common.ResizeOptions;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
+
+import jp.wasabeef.fresco.processors.BlurPostprocessor;
 
 public class PlayingActivity extends AppCompatActivity {
 
-    private ImageView albumArt;
+    private SimpleDraweeView albumArt;
     private FrameLayout headerView;
     private ScrollView lrcScrollView;
     private TextView musicDurationPlayed;
@@ -29,21 +38,36 @@ public class PlayingActivity extends AppCompatActivity {
     private ImageView playingPlay;
     private ImageView playingNext;
     private ImageView playingPlaylist;
+    private TextView song_name;
+    private TextView song_artist;
 
     //Toolbar控件
 
 
+    private String albumArtUrl;
+    private int songLyric;
+    private String songName;
+    private String songArtist;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getIntent() != null) {
+            albumArtUrl = getIntent().getStringExtra("songBackgroundImage");
+            songLyric = getIntent().getIntExtra("songLyric",-1);
+            songName = getIntent().getStringExtra("songName");
+            songArtist = getIntent().getStringExtra("songArtist");
+            Log.d("PlayingActivity", albumArtUrl);
+        }
+
         setContentView(R.layout.activity_playing);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.menu_toolbar_forplaying);
-        toolbar.setTitle("本地音乐");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         toolbar.setNavigationIcon(R.mipmap.ic_arrow_back_white_36dp);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,13 +78,30 @@ public class PlayingActivity extends AppCompatActivity {
         initViews();
 
 
+        song_name.setText(songName);
+        song_artist.setText(songArtist);
+
+        setSongBackgroundImage();
 
 
     }
 
+    private void setSongBackgroundImage() {
+        ImageRequest request = ImageRequestBuilder.fromRequest(ImageRequest.fromUri(albumArtUrl))
+                .setResizeOptions(new ResizeOptions(200, 300))
+                .setPostprocessor(new BlurPostprocessor(this, 20, 4))
+                .build();
+        PipelineDraweeController controller =
+                (PipelineDraweeController) Fresco.newDraweeControllerBuilder()
+                        .setImageRequest(request)
+                        .setOldController(albumArt.getController())
+                        .build();
+        albumArt.setController(controller);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_toolbar_forplaying,menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar_forplaying, menu);
 
         return true;
     }
@@ -82,7 +123,7 @@ public class PlayingActivity extends AppCompatActivity {
 
 
     private void initViews() {
-        albumArt = (ImageView) findViewById(R.id.albumArt);
+        albumArt = (SimpleDraweeView) findViewById(R.id.albumArt);
         headerView = (FrameLayout) findViewById(R.id.headerView);
         lrcScrollView = (ScrollView) findViewById(R.id.lrcScrollView);
         musicDurationPlayed = (TextView) findViewById(R.id.music_duration_played);
@@ -93,7 +134,8 @@ public class PlayingActivity extends AppCompatActivity {
         playingPlay = (ImageView) findViewById(R.id.playing_play);
         playingNext = (ImageView) findViewById(R.id.playing_next);
         playingPlaylist = (ImageView) findViewById(R.id.playing_playlist);
-
+        song_name = (TextView) findViewById(R.id.song_name);
+        song_artist = (TextView) findViewById(R.id.song_artist);
 
     }
 

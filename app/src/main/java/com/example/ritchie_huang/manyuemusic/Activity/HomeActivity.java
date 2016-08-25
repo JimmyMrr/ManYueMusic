@@ -68,6 +68,11 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

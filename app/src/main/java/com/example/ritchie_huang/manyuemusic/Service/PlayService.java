@@ -145,7 +145,6 @@ public class PlayService<T> extends Service {
                 mMediaPlayer.setDataSource(dataSource);
                 mMediaPlayer.prepare();
                 mMediaPlayer.start();
-                mMediaPlayer.setOnCompletionListener(new MyCompletionListener());
 
             } catch (IOException e) {
                 e.printStackTrace();

@@ -296,6 +296,15 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
                                 super.run();
 
                                 mBinder.startPlay(localItem.getMp3Url());
+
+                                Intent intent = new Intent(NeteaseGedanDetailActivity.this, PlayingActivity.class);
+                                intent.putExtra("songBackgroundImage",localItem.getAlbum().getPicUrl());
+                                intent.putExtra("songLyric", localItem.getId());
+                                intent.putExtra("songName", localItem.getName());
+                                intent.putExtra("songArtist", localItem.getArtists().get(0).getName());
+                                startActivity(intent);
+
+
                             }
                         }.start();
 

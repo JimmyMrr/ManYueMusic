@@ -125,6 +125,46 @@ public class HttpUtil{
         return null;
     }
 
+    public static JsonObject PostResposeJsonObject(String action1 ,RequestBody formbody, Context context , boolean forceCache){
+        try {
+
+//            File sdcache = context.getExternalCacheDir();
+            File sdcache = new File(context.getCacheDir(), "/storage/sdcard0/Android/data/com.example.ritchie_huang.manyuemusic/cache");
+            Cache cache = new Cache(sdcache.getAbsoluteFile(), 1024 * 1024 * 30); //30Mb
+            mOkHttpClient.setCache(cache);
+
+            mOkHttpClient.setConnectTimeout(1000, TimeUnit.MINUTES);
+            mOkHttpClient.setReadTimeout(1000, TimeUnit.MINUTES);
+            Request.Builder builder = new Request.Builder()
+                    .url(action1)
+                    .post(formbody)
+                    .addHeader("Referer","http://music.163.com/")
+                    .addHeader("Cookie", "appver=1.5.0.75771");
+            if(forceCache){
+                builder.cacheControl(CacheControl.FORCE_CACHE);
+            }
+            Request request = builder.build();
+            Response response = mOkHttpClient.newCall(request).execute();
+            if(response.isSuccessful()){
+                String c = response.body().string();
+                Log.e("re",c);
+                JsonParser parser = new JsonParser();
+                JsonElement el = parser.parse(c);
+                return el.getAsJsonObject();
+
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+//       mOkHttpClient.setCookieHandler(new CookieManager(
+//                new PersistentCookieStore(getContext().getApplicationContext()),
+//                CookiePolicy.ACCEPT_ALL));
+
+        return null;
+    }
+
     public static JsonObject getResposeJsonObject(String action1){
         try {
             mOkHttpClient.setConnectTimeout(1000, TimeUnit.MINUTES);
