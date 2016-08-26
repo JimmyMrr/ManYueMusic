@@ -1,11 +1,9 @@
 package com.example.ritchie_huang.manyuemusic.Lyric;
 
 import android.content.Context;
-import android.os.Message;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
-import com.google.gson.JsonObject;
 import com.squareup.okhttp.RequestBody;
 
 import java.util.ArrayList;
@@ -58,8 +56,12 @@ y */
         mLyricContent = new LyricContent();
     }
 
-    public void formatPost(String url, RequestBody formbody, Context context,boolean forceCache) {
-        JsonObject lyricObj = HttpUtil.PostResposeJsonObject(url,formbody,context,forceCache).getAsJsonObject("lyric");
+
+    public String getLyricString(String url, RequestBody formbody, Context context,boolean forceCache) {
+
+        String lyricString = HttpUtil.PostResposeJsonObject(url, formbody, context, forceCache).getAsJsonObject("lrc").get("lyric").getAsString();
+        Log.d("GetLyric", lyricString);
+        return lyricString;
     }
 
 

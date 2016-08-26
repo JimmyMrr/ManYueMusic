@@ -15,13 +15,17 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.SeekBar;
 
+import com.example.ritchie_huang.manyuemusic.Lyric.GetLyric;
 import com.example.ritchie_huang.manyuemusic.R;
+import com.example.ritchie_huang.manyuemusic.Util.Api;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.RequestBody;
 
 import jp.wasabeef.fresco.processors.BlurPostprocessor;
 
@@ -40,12 +44,14 @@ public class PlayingActivity extends AppCompatActivity {
     private ImageView playingPlaylist;
     private TextView song_name;
     private TextView song_artist;
+    private TextView lyric;
 
     //Toolbar控件
 
 
     private String albumArtUrl;
-    private int songLyric;
+    private int songLyricId;
+    private String songLyric;
     private String songName;
     private String songArtist;
 
@@ -56,7 +62,8 @@ public class PlayingActivity extends AppCompatActivity {
 
         if (getIntent() != null) {
             albumArtUrl = getIntent().getStringExtra("songBackgroundImage");
-            songLyric = getIntent().getIntExtra("songLyric",-1);
+            songLyricId = getIntent().getIntExtra("songLyric",-1);
+            Log.d("PlayingActivity", "songLyricId:" + songLyricId);
             songName = getIntent().getStringExtra("songName");
             songArtist = getIntent().getStringExtra("songArtist");
             Log.d("PlayingActivity", albumArtUrl);
@@ -78,11 +85,26 @@ public class PlayingActivity extends AppCompatActivity {
         initViews();
 
 
+        setLyric();
         song_name.setText(songName);
         song_artist.setText(songArtist);
+        lyric.setText(songLyric);
 
         setSongBackgroundImage();
 
+
+    }
+
+    private void setLyric() {
+        RequestBody formbody = new FormEncodingBuilder()
+                .add("os", "pc")
+                .add("id", String.valueOf(songLyricId))
+                .add("lv", String.valueOf(-1))
+                .add("kv", String.valueOf(-1))
+                .add("tv", String.valueOf(-1))
+                .build();
+
+        songLyric = new GetLyric().getLyricString(Api.SONG_LRC,formbody,PlayingActivity.this,false);
 
     }
 
@@ -136,6 +158,8 @@ public class PlayingActivity extends AppCompatActivity {
         playingPlaylist = (ImageView) findViewById(R.id.playing_playlist);
         song_name = (TextView) findViewById(R.id.song_name);
         song_artist = (TextView) findViewById(R.id.song_artist);
+
+        lyric = (TextView) findViewById(R.id.lyric);
 
     }
 

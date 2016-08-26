@@ -73,13 +73,15 @@
                 android:id="@+id/lrcScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
-
-                <com.example.ritchie_huang.manyuemusic.Lyric.LyricView
+                <TextView
+                    android:id="@+id/lyric"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     />
+
+
+
             </ScrollView>
 
 
