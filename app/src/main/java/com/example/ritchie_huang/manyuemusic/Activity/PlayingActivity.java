@@ -2,6 +2,8 @@ package com.example.ritchie_huang.manyuemusic.Activity;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -18,6 +20,8 @@ import android.widget.SeekBar;
 import com.example.ritchie_huang.manyuemusic.Lyric.GetLyric;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Util.Api;
+import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
+import com.example.ritchie_huang.manyuemusic.Util.SongUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -30,6 +34,13 @@ import com.squareup.okhttp.RequestBody;
 import jp.wasabeef.fresco.processors.BlurPostprocessor;
 
 public class PlayingActivity extends AppCompatActivity {
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            lyric.setText((CharSequence) msg.obj);
+        }
+    };
 
     private SimpleDraweeView albumArt;
     private FrameLayout headerView;
@@ -51,6 +62,7 @@ public class PlayingActivity extends AppCompatActivity {
 
     private String albumArtUrl;
     private int songLyricId;
+    private int songDuration;
     private String songLyric;
     private String songName;
     private String songArtist;
@@ -63,10 +75,9 @@ public class PlayingActivity extends AppCompatActivity {
         if (getIntent() != null) {
             albumArtUrl = getIntent().getStringExtra("songBackgroundImage");
             songLyricId = getIntent().getIntExtra("songLyric",-1);
-            Log.d("PlayingActivity", "songLyricId:" + songLyricId);
+            songDuration = getIntent().getIntExtra("songDuration", -1);
             songName = getIntent().getStringExtra("songName");
             songArtist = getIntent().getStringExtra("songArtist");
-            Log.d("PlayingActivity", albumArtUrl);
         }
 
         setContentView(R.layout.activity_playing);
@@ -86,9 +97,10 @@ public class PlayingActivity extends AppCompatActivity {
 
 
         setLyric();
+
+        musicDuration.setText(SongUtil.formatDuration(songDuration));
         song_name.setText(songName);
         song_artist.setText(songArtist);
-        lyric.setText(songLyric);
 
         setSongBackgroundImage();
 
@@ -96,7 +108,7 @@ public class PlayingActivity extends AppCompatActivity {
     }
 
     private void setLyric() {
-        RequestBody formbody = new FormEncodingBuilder()
+        final RequestBody formbody = new FormEncodingBuilder()
                 .add("os", "pc")
                 .add("id", String.valueOf(songLyricId))
                 .add("lv", String.valueOf(-1))
@@ -104,7 +116,16 @@ public class PlayingActivity extends AppCompatActivity {
                 .add("tv", String.valueOf(-1))
                 .build();
 
-        songLyric = new GetLyric().getLyricString(Api.SONG_LRC,formbody,PlayingActivity.this,false);
+        new Thread(){
+            @Override
+            public void run() {
+                songLyric = HttpUtil.PostResposeJsonObject(Api.SONG_LRC, formbody, PlayingActivity.this, false).getAsJsonObject("lrc").get("lyric").getAsString();
+                Message message = Message.obtain();
+                message.obj = songLyric;
+                handler.sendMessage(message);
+
+            }
+        }.start();
 
     }
 

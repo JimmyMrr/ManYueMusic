@@ -4,11 +4,7 @@
     android:layout_height="match_parent">
 
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/black"
-        />
+
     <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/albumArt"
         android:layout_width="match_parent"
@@ -73,14 +69,11 @@
                 android:id="@+id/lrcScrollView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/lyric"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    />
 
-
+                <com.example.ritchie_huang.manyuemusic.Lyric.LyricView
+                    android:id="@+id/lyricView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
 
             </ScrollView>
 

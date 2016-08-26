@@ -79,14 +79,6 @@ public class LyricView extends TextView {
 
     }
 
-    /*
-    onDraw()就是画歌词的主要方法了
-    在PlayFragment中会不停地调用
-    lyricView.invalidate();这个方法
-    此方法写在了一个Runnable的run()函数中
-    通过不断的给一个handler发送消息,不断的重新绘制歌词
-    来达到歌词同步的效果
-     */
 
 
     @Override

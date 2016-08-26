@@ -302,6 +302,7 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
                                 intent.putExtra("songLyric", localItem.getId());
                                 intent.putExtra("songName", localItem.getName());
                                 intent.putExtra("songArtist", localItem.getArtists().get(0).getName());
+                                intent.putExtra("songDuration", localItem.getDuration());
                                 startActivity(intent);
 
 
