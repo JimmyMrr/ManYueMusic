@@ -62,6 +62,7 @@ y */
         String lyricString = HttpUtil.PostResposeJsonObject(url, formbody, context, forceCache).getAsJsonObject("lrc").get("lyric").getAsString();
         Log.d("GetLyric", lyricString);
         return lyricString;
+
     }
 
 
