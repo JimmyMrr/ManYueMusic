@@ -7,7 +7,6 @@ import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.example.ritchie_huang.manyuemusic.Lyric.LyricContent;
 import com.example.ritchie_huang.manyuemusic.R;
 
 import java.util.List;
