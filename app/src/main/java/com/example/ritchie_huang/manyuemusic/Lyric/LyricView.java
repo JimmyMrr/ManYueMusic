@@ -14,6 +14,7 @@ import java.util.List;
 /**
  * Created by ritchie-huang on 16-8-22.
  */
+
 public class LyricView extends TextView {
 
     private float width;
