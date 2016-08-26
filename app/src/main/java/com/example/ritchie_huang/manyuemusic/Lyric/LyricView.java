@@ -25,7 +25,6 @@ public class LyricView extends TextView {
     private int index = 0;                  //当前歌词的索引
 
 
-
     private List<LyricContent> myLyricList = null;        //每个LyricCOntent对应着一句话,这个List就是整个解析后的歌词文件
 
 
