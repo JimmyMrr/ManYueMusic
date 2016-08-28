@@ -69,9 +69,7 @@ public class GetLyric {
             @Override
             public void run() {
                 lrcString[0] = HttpUtil.PostResposeJsonObject(url, formbody, context, forceCache).getAsJsonObject("lrc").get("lyric").getAsString();
-                Message message = Message.obtain();
-                message.obj = lrcString[0];
-                handler.sendMessage(message);
+                Log.d("GetLyric", lrcString[0]);
 
 
             }
@@ -81,15 +79,7 @@ public class GetLyric {
 
 
     }
-    private Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            formatLrc((String) msg.obj);
-            for (int i = 0; i < mLyricContentList.size(); i++) {
-                System.out.println(mLyricContentList.get(i).getLyricTime() + " " + mLyricContentList.get(i).getLyricString());
-            }
-        }
-    };
+
     private void formatLrc(String lrcString) {
         String s = "";
         while (lrcString != null) {
