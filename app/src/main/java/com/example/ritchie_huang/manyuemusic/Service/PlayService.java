@@ -11,10 +11,18 @@ import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
 
+import com.example.ritchie_huang.manyuemusic.Activity.PlayingActivity;
+import com.example.ritchie_huang.manyuemusic.DataItem.GedanNeteaseDetailItem;
 import com.example.ritchie_huang.manyuemusic.DataItem.MP3InfoItem;
+import com.example.ritchie_huang.manyuemusic.Lyric.GetLyric;
+import com.example.ritchie_huang.manyuemusic.Lyric.LyricContent;
+import com.example.ritchie_huang.manyuemusic.Util.Api;
 import com.example.ritchie_huang.manyuemusic.Util.Constants;
+import com.squareup.okhttp.FormEncodingBuilder;
+import com.squareup.okhttp.RequestBody;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +40,11 @@ public class PlayService<T> extends Service {
     private int currentTime;
     private int musicDuration;
     private MyReceiver mMyReceiver;
+
+    //lyric
+    private GetLyric mGetLyric;
+    private List<LyricContent> mLyricContentList = new ArrayList<>();
+    private int index = 0;
 
 
     private Handler mHandler = new Handler() {
@@ -130,12 +143,13 @@ public class PlayService<T> extends Service {
     }
 
 
-
-
-
     public class PlayMusicBinder extends Binder {
-        private void setPlayList(List<T> list) {
+        public void setPlayList(List<T> list) {
             mSongList = list;
+        }
+
+        public void setCurrent(int num) {
+            current = num;
         }
 
         public void startPlay(String dataSource) {
@@ -145,6 +159,7 @@ public class PlayService<T> extends Service {
                 mMediaPlayer.setDataSource(dataSource);
                 mMediaPlayer.prepare();
                 mMediaPlayer.start();
+
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -239,5 +254,48 @@ public class PlayService<T> extends Service {
         int result = (int) (Math.random() * i);
         return result;
     }
+
+    private void initLrc() {
+        mGetLyric = new GetLyric();
+        GedanNeteaseDetailItem.ResultBean.TracksBean localItem = (GedanNeteaseDetailItem.ResultBean.TracksBean) mSongList.get(current);
+        final RequestBody formbody = new FormEncodingBuilder()
+                .add("os", "pc")
+                .add("id", String.valueOf(localItem.getId()))
+                .add("lv", String.valueOf(-1))
+                .add("kv", String.valueOf(-1))
+                .add("tv", String.valueOf(-1))
+                .build();
+
+        mGetLyric.readLyric(Api.SONG_LRC, formbody, getApplicationContext(), false);
+        mLyricContentList = mGetLyric.getLyricContentList();
+
+    }
+
+    public int lrcIndex() {
+        if (mMediaPlayer.isPlaying()) {
+            currentTime = mMediaPlayer.getCurrentPosition();
+            musicDuration = mMediaPlayer.getDuration();
+        }
+        if (currentTime < musicDuration) {
+            for (int i = 0; i < mLyricContentList.size(); i++) {
+                if (i < mLyricContentList.size() - 1) {
+                    if (currentTime < mLyricContentList.get(i).getLyricTime() && i == 0) {
+                        index = i;
+                    }
+                    if (currentTime > mLyricContentList.get(i).getLyricTime()
+                            && currentTime < mLyricContentList.get(i + 1).getLyricTime()) {
+                        index = i;
+                    }
+                }
+                if (i == mSongList.size() - 1
+                        && currentTime > mLyricContentList.get(i).getLyricTime()) {
+                    index = i;
+                }
+            }
+        }
+        return index;
+    }
+
+
 }
 

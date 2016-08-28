@@ -1,5 +1,6 @@
 package com.example.ritchie_huang.manyuemusic.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
@@ -18,8 +19,11 @@ import android.widget.TextView;
 import android.widget.SeekBar;
 
 import com.example.ritchie_huang.manyuemusic.Lyric.GetLyric;
+import com.example.ritchie_huang.manyuemusic.Lyric.LyricView;
 import com.example.ritchie_huang.manyuemusic.R;
+import com.example.ritchie_huang.manyuemusic.Service.PlayService;
 import com.example.ritchie_huang.manyuemusic.Util.Api;
+import com.example.ritchie_huang.manyuemusic.Util.Constants;
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
 import com.example.ritchie_huang.manyuemusic.Util.SongUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -33,12 +37,13 @@ import com.squareup.okhttp.RequestBody;
 
 import jp.wasabeef.fresco.processors.BlurPostprocessor;
 
-public class PlayingActivity extends AppCompatActivity {
+public class PlayingActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            lyric.setText((CharSequence) msg.obj);
+
+
         }
     };
 
@@ -55,7 +60,7 @@ public class PlayingActivity extends AppCompatActivity {
     private ImageView playingPlaylist;
     private TextView song_name;
     private TextView song_artist;
-    private TextView lyric;
+    private LyricView lyric;
 
     //Toolbar控件
 
@@ -63,7 +68,6 @@ public class PlayingActivity extends AppCompatActivity {
     private String albumArtUrl;
     private int songLyricId;
     private int songDuration;
-    private String songLyric;
     private String songName;
     private String songArtist;
 
@@ -74,7 +78,7 @@ public class PlayingActivity extends AppCompatActivity {
 
         if (getIntent() != null) {
             albumArtUrl = getIntent().getStringExtra("songBackgroundImage");
-            songLyricId = getIntent().getIntExtra("songLyric",-1);
+            songLyricId = getIntent().getIntExtra("songLyric", -1);
             songDuration = getIntent().getIntExtra("songDuration", -1);
             songName = getIntent().getStringExtra("songName");
             songArtist = getIntent().getStringExtra("songArtist");
@@ -97,6 +101,7 @@ public class PlayingActivity extends AppCompatActivity {
 
 
         setLyric();
+        setUpEverything();
 
         musicDuration.setText(SongUtil.formatDuration(songDuration));
         song_name.setText(songName);
@@ -104,6 +109,11 @@ public class PlayingActivity extends AppCompatActivity {
 
         setSongBackgroundImage();
 
+
+    }
+
+    private void setUpEverything() {
+        playingMode.setOnClickListener(this);
 
     }
 
@@ -116,16 +126,9 @@ public class PlayingActivity extends AppCompatActivity {
                 .add("tv", String.valueOf(-1))
                 .build();
 
-        new Thread(){
-            @Override
-            public void run() {
-                songLyric = HttpUtil.PostResposeJsonObject(Api.SONG_LRC, formbody, PlayingActivity.this, false).getAsJsonObject("lrc").get("lyric").getAsString();
-                Message message = Message.obtain();
-                message.obj = songLyric;
-                handler.sendMessage(message);
 
-            }
-        }.start();
+        new GetLyric().readLyric(Api.SONG_LRC, formbody, PlayingActivity.this, false);
+
 
     }
 
@@ -168,7 +171,7 @@ public class PlayingActivity extends AppCompatActivity {
     private void initViews() {
         albumArt = (SimpleDraweeView) findViewById(R.id.albumArt);
         headerView = (FrameLayout) findViewById(R.id.headerView);
-        lrcScrollView = (ScrollView) findViewById(R.id.lrcScrollView);
+        lyric = (LyricView) findViewById(R.id.lyricView);
         musicDurationPlayed = (TextView) findViewById(R.id.music_duration_played);
         playSeek = (SeekBar) findViewById(R.id.play_seek);
         musicDuration = (TextView) findViewById(R.id.music_duration);
@@ -180,8 +183,21 @@ public class PlayingActivity extends AppCompatActivity {
         song_name = (TextView) findViewById(R.id.song_name);
         song_artist = (TextView) findViewById(R.id.song_artist);
 
-        lyric = (TextView) findViewById(R.id.lyric);
 
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.playing_mode:
+                Intent intent = new Intent(PlayingActivity.this, PlayService.class);
+                intent.putExtra("control", Constants.STATUS_ORDER);
+                sendBroadcast(intent);
+
+                break;
+
+            default:
+                break;
+        }
+    }
 }

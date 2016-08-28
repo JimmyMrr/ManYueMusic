@@ -100,27 +100,26 @@ public class LyricView extends TextView {
         notCurrentPaint.setTypeface(Typeface.DEFAULT);
 
 
-        try{
+        try {
             setText("");
 
 
             float tempY = height / 2;                                                                     //画出之前的句子
-            for(int i =index - 1;i >= 0; i --){
+            for (int i = index - 1; i >= 0; i--) {
                 tempY -= textHeight;
-                canvas.drawText(myLyricList.get(i).getLyricString(),width/2,tempY,notCurrentPaint);
+                canvas.drawText(myLyricList.get(i).getLyricString(), width / 2, tempY, notCurrentPaint);
             }
-            canvas.drawText(myLyricList.get(index).getLyricString(),width/2,height/2,currentPaint);       //画出当前的句子
+            canvas.drawText(myLyricList.get(index).getLyricString(), width / 2, height / 2, currentPaint);       //画出当前的句子
 
 
             tempY = height / 2;                                                                           //画出之后的句子
-            for(int i =index + 1;i<myLyricList.size(); i ++){
+            for (int i = index + 1; i < myLyricList.size(); i++) {
                 tempY += textHeight;
-                canvas.drawText(myLyricList.get(i).getLyricString(),width/2,tempY,notCurrentPaint);
+                canvas.drawText(myLyricList.get(i).getLyricString(), width / 2, tempY, notCurrentPaint);
             }
 
 
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             setText("并没有发现歌词，请先下载.......");
         }
     }

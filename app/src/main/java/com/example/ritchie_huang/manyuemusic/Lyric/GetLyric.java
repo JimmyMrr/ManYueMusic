@@ -1,6 +1,8 @@
 package com.example.ritchie_huang.manyuemusic.Lyric;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
@@ -15,7 +17,6 @@ import java.util.List;
 public class GetLyric {
     private List<LyricContent> mLyricContentList;
     private LyricContent mLyricContent;
-    private String lyricString;
 
     /**
      * {"sgc":true,
@@ -60,9 +61,74 @@ public class GetLyric {
     }
 
 
+    public void readLyric(final String url, final RequestBody formbody, final Context context, final boolean forceCache) {
+        final String[] lrcString = new String[1];
 
-    public void readLyric(String url, RequestBody formbody, Context context, boolean forceCache) {
+        new Thread() {
 
+            @Override
+            public void run() {
+                lrcString[0] = HttpUtil.PostResposeJsonObject(url, formbody, context, forceCache).getAsJsonObject("lrc").get("lyric").getAsString();
+                Message message = Message.obtain();
+                message.obj = lrcString[0];
+                handler.sendMessage(message);
+
+
+            }
+
+
+        }.start();
+
+
+
+
+    }
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            formatLrc((String) msg.obj);
+            for (int i = 0; i < mLyricContentList.size(); i++) {
+                System.out.println(mLyricContentList.get(i).getLyricTime() + " " + mLyricContentList.get(i).getLyricString());
+            }
+        }
+    };
+    private void formatLrc(String lrcString) {
+        String s = "";
+        while (lrcString != null) {
+            s = s.replace("[", "");
+            s = s.replace("]", "@");
+
+            String splitLrcData[] = s.split("@");
+            if (splitLrcData.length > 1) {
+                mLyricContent.setLyricString(splitLrcData[1]);
+
+                int lrcTime = time2Str(splitLrcData[0]);
+                mLyricContent.setLyricTime(lrcTime);
+                mLyricContentList.add(mLyricContent);
+
+                mLyricContent = new LyricContent();
+            }
+
+        }
+
+    }
+
+    private int time2Str(String timeStr) {
+        timeStr = timeStr.replace(":", ".");
+        timeStr = timeStr.replace(".", "@");
+
+        String timeData[] = timeStr.split("@");
+
+        int min = Integer.parseInt(timeData[0]);
+        int sec = Integer.parseInt(timeData[1]);
+        int millisec = Integer.parseInt(timeData[2]);
+
+        int currentTime = (min * 60 + sec) * 1000 + millisec * 10;
+        return currentTime;
+    }
+
+    public List<LyricContent> getLyricContentList() {
+        return mLyricContentList;
     }
 
 

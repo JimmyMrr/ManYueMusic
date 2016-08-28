@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+             android:layout_width="match_parent"
+             android:layout_height="match_parent">
 
 
     <com.facebook.drawee.view.SimpleDraweeView
@@ -10,8 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/login_bg_night" />
-
+        android:src="@drawable/login_bg_night"/>
 
 
     <android.support.v7.widget.Toolbar
@@ -19,30 +17,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <TextView
                 android:id="@+id/song_name"
-                android:ellipsize="marquee"
-                android:singleLine="true"
-                android:marqueeRepeatLimit="marquee_forever"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="17sp"
+                android:ellipsize="marquee"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:singleLine="true"
                 android:textColor="@color/white_text"
+                android:textSize="17sp"
                 />
 
             <TextView
                 android:id="@+id/song_artist"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
                 android:maxLines="1"
                 android:textColor="@color/light_grey"
+                android:textSize="12sp"
                 />
 
 
@@ -51,7 +51,8 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.percent.PercentRelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -60,22 +61,18 @@
 
         <FrameLayout
             android:id="@+id/headerView"
-            app:layout_heightPercent="65%"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="?attr/actionBarSize">
+            android:layout_marginTop="?attr/actionBarSize"
+            app:layout_heightPercent="65%">
 
-            <ScrollView
-                android:id="@+id/lrcScrollView"
+
+            <com.example.ritchie_huang.manyuemusic.Lyric.LyricView
+                android:id="@+id/lyricView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.example.ritchie_huang.manyuemusic.Lyric.LyricView
-                    android:id="@+id/lyricView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-            </ScrollView>
+                android:layout_height="match_parent"
+                android:gravity="center"
+                />
 
 
         </FrameLayout>
@@ -116,7 +113,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="22" />
+                    android:layout_weight="22"/>
 
                 <TextView
                     android:id="@+id/music_duration"
@@ -143,7 +140,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:src="@mipmap/play_icn_loop_prs" />
+                    android:src="@mipmap/play_icn_loop_prs"/>
 
                 <ImageView
                     android:id="@+id/playing_pre"
@@ -151,7 +148,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:src="@mipmap/play_btn_prev" />
+                    android:src="@mipmap/play_btn_prev"/>
 
                 <ImageView
                     android:id="@+id/playing_play"
@@ -159,7 +156,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:src="@mipmap/play_rdi_btn_pause" />
+                    android:src="@mipmap/play_rdi_btn_pause"/>
 
                 <ImageView
                     android:id="@+id/playing_next"
@@ -167,7 +164,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:src="@mipmap/play_btn_next" />
+                    android:src="@mipmap/play_btn_next"/>
 
                 <ImageView
                     android:id="@+id/playing_playlist"
@@ -175,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:src="@mipmap/play_icn_src_prs" />
+                    android:src="@mipmap/play_icn_src_prs"/>
 
             </LinearLayout>
         </LinearLayout>

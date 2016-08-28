@@ -295,6 +295,8 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
                             public void run() {
                                 super.run();
 
+                                mBinder.setPlayList(arraylist.get(0).getResult().getTracks());
+                                mBinder.setCurrent(i-1);
                                 mBinder.startPlay(localItem.getMp3Url());
 
                                 Intent intent = new Intent(NeteaseGedanDetailActivity.this, PlayingActivity.class);
