@@ -80,8 +80,6 @@ public class GetLyric {
         }.start();
 
 
-
-
     }
     private Handler handler = new Handler(){
         @Override
