@@ -69,7 +69,7 @@ public class GetLyric {
             @Override
             public void run() {
                 lrcString[0] = HttpUtil.PostResposeJsonObject(url, formbody, context, forceCache).getAsJsonObject("lrc").get("lyric").getAsString();
-                Log.d("GetLyric", lrcString[0]);
+                formatLrc(lrcString[0]);
 
 
             }
@@ -81,7 +81,7 @@ public class GetLyric {
     }
 
     private void formatLrc(String lrcString) {
-        String s = "";
+        String s = lrcString;
         while (lrcString != null) {
             s = s.replace("[", "");
             s = s.replace("]", "@");

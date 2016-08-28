@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
 import com.example.ritchie_huang.manyuemusic.Activity.PlayingActivity;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanNeteaseDetailItem;
@@ -45,6 +46,7 @@ public class PlayService<T> extends Service {
     private GetLyric mGetLyric;
     private List<LyricContent> mLyricContentList = new ArrayList<>();
     private int index = 0;
+    private PlayingActivity mPlayingActivity;
 
 
     private Handler mHandler = new Handler() {
@@ -144,6 +146,16 @@ public class PlayService<T> extends Service {
 
 
     public class PlayMusicBinder extends Binder {
+
+        public PlayService getPlayService() {
+            return PlayService.this;
+        }
+
+        public void setPlayingPath(int num) {
+            GedanNeteaseDetailItem.ResultBean.TracksBean currentSong = (GedanNeteaseDetailItem.ResultBean.TracksBean) mSongList.get(num);
+            mMusicPath = currentSong.getMp3Url();
+        }
+
         public void setPlayList(List<T> list) {
             mSongList = list;
         }
@@ -168,28 +180,45 @@ public class PlayService<T> extends Service {
         }
 
 
-        private void pause() {
+        public void pause() {
             if (isPaused) {
                 mMediaPlayer.start();
                 isPaused = false;
             }
         }
 
-        private void previous() {
+        public void previous() {
             Intent intent = new Intent(Constants.UPDATE_ACTION);
-            intent.putExtra("current", current);
-            sendBroadcast(intent);
-            play(0);
+            current--;
+            if (current < 0) {
+                intent.putExtra("current", current);
+                setPlayingPath(current);
+                sendBroadcast(intent);
+                play(0);
+
+            } else {
+                Toast.makeText(mPlayingActivity, "错误", Toast.LENGTH_SHORT).show();
+
+            }
+
         }
 
-        private void next() {
+        public void next() {
             Intent intent = new Intent(Constants.UPDATE_ACTION);
-            intent.putExtra("current", current);
-            sendBroadcast(intent);
-            play(0);
+            current++;
+            if (current < mSongList.size()) {
+                setPlayingPath(current);
+                intent.putExtra("current", current);
+                sendBroadcast(intent);
+                play(0);
+            } else {
+                Toast.makeText(mPlayingActivity, "错误", Toast.LENGTH_SHORT).show();
+
+            }
+
         }
 
-        private void stop() {
+        public void stop() {
             if (mMediaPlayer != null) {
                 mMediaPlayer.stop();
             }
@@ -255,6 +284,10 @@ public class PlayService<T> extends Service {
         return result;
     }
 
+    public void setPlayingActivity(PlayingActivity activity) {
+        this.mPlayingActivity = activity;
+    }
+
     private void initLrc() {
         mGetLyric = new GetLyric();
         GedanNeteaseDetailItem.ResultBean.TracksBean localItem = (GedanNeteaseDetailItem.ResultBean.TracksBean) mSongList.get(current);
@@ -269,7 +302,20 @@ public class PlayService<T> extends Service {
         mGetLyric.readLyric(Api.SONG_LRC, formbody, getApplicationContext(), false);
         mLyricContentList = mGetLyric.getLyricContentList();
 
+        mPlayingActivity.lyric.setMyLyricList(mLyricContentList);
+        mHandler.post(mRunnable);
+
+
     }
+
+    Runnable mRunnable = new Runnable() {
+        @Override
+        public void run() {
+            mPlayingActivity.lyric.setIndex(lrcIndex());
+            mPlayingActivity.lyric.invalidate();
+            mHandler.postDelayed(mRunnable, 100);
+        }
+    };
 
     public int lrcIndex() {
         if (mMediaPlayer.isPlaying()) {

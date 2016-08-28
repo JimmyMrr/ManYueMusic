@@ -1,9 +1,15 @@
 package com.example.ritchie_huang.manyuemusic.Activity;
 
+import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +40,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.squareup.okhttp.FormEncodingBuilder;
 import com.squareup.okhttp.RequestBody;
+import com.vistrav.ask.Ask;
 
 import jp.wasabeef.fresco.processors.BlurPostprocessor;
 
@@ -60,7 +67,7 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
     private ImageView playingPlaylist;
     private TextView song_name;
     private TextView song_artist;
-    private LyricView lyric;
+    public LyricView lyric;
 
     //Toolbar控件
 
@@ -71,11 +78,13 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
     private String songName;
     private String songArtist;
 
+    private PlayService.PlayMusicBinder mBinder;
+    private ServiceConnection mConnection;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getIntent() != null) {
             albumArtUrl = getIntent().getStringExtra("songBackgroundImage");
             songLyricId = getIntent().getIntExtra("songLyric", -1);
@@ -100,7 +109,10 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
         initViews();
 
 
-        setLyric();
+//        setLyric();
+
+//        mConnection = new ConnectionService();
+//        bindService(new Intent(PlayingActivity.this, PlayService.class), mConnection, -1);
         setUpEverything();
 
         musicDuration.setText(SongUtil.formatDuration(songDuration));
@@ -111,6 +123,21 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
 
 
     }
+
+    class ConnectionService implements ServiceConnection {
+
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            mBinder = (PlayService.PlayMusicBinder) iBinder;
+//            mPlayService.setPlayingActivity(PlayingActivity.this);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+
+        }
+    }
+
 
     private void setUpEverything() {
         playingMode.setOnClickListener(this);
@@ -190,14 +217,41 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.playing_mode:
-                Intent intent = new Intent(PlayingActivity.this, PlayService.class);
-                intent.putExtra("control", Constants.STATUS_ORDER);
-                sendBroadcast(intent);
 
+                break;
+
+            case R.id.playing_next:
+                mBinder.next();
+                break;
+            case R.id.playing_pre:
+                mBinder.previous();
+                break;
+            case R.id.playing_play:
+                mBinder.pause();
                 break;
 
             default:
                 break;
         }
+    }
+
+    public class MyReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            String current = intent.getStringExtra("current");
+            if (action.equals(Constants.UPDATE_ACTION)) {
+
+
+            }
+
+
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
