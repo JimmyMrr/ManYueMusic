@@ -1,14 +1,11 @@
 package com.example.ritchie_huang.manyuemusic.Activity;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,25 +25,18 @@ import com.example.ritchie_huang.manyuemusic.DataItem.MusicDetailNet;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Util.BMA;
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
-import com.example.ritchie_huang.manyuemusic.Util.ImageUtils;
 import com.example.ritchie_huang.manyuemusic.ViewHolder.CommonItemViewHolder;
 import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
-import com.facebook.binaryresource.BinaryResource;
-import com.facebook.binaryresource.FileBinaryResource;
-import com.facebook.cache.common.CacheKey;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,15 +46,16 @@ public class HotGedanDetailActivity extends AppCompatActivity {
 
     Gson mGson;
     private String mPlayListId;
-    private String mAlbumPath,mAlbumName, mAlbumDes;
+    private String mAlbumPath, mAlbumName, mAlbumDes;
     private List<GedanBMADetailItem> mList;
     private SimpleDraweeView albumSmallPic;
     private SimpleDraweeView albumArt;
-    private TextView albumName,albumDes;
+    private TextView albumName, albumDes;
     private RecyclerView mRecyclerView;
     private PlaylistDetailAdapter mAdapter;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     MediaPlayer mediaPlayer = new MediaPlayer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +114,7 @@ public class HotGedanDetailActivity extends AppCompatActivity {
 
         ImageRequest request =
                 ImageRequestBuilder.fromRequest(ImageRequest.fromUri(Uri.parse(mAlbumPath)))
-                        .setResizeOptions(new ResizeOptions(50,50))
+                        .setResizeOptions(new ResizeOptions(50, 50))
                         .setPostprocessor(new BlurPostprocessor(this, 12, 2))
                         .build();
 
@@ -135,9 +126,7 @@ public class HotGedanDetailActivity extends AppCompatActivity {
         albumArt.setController(controller);
 
 
-
     }
-
 
 
     GedanSrcBMA gedanSrcBMA;
@@ -155,8 +144,8 @@ public class HotGedanDetailActivity extends AppCompatActivity {
                     JsonArray pArray = jsonObject.get("content").getAsJsonArray();
                     int plen = pArray.size();
 
-                    for(int i = 0;i < plen; i++){
-                        GedanBMADetailItem geDanGeInfo = mGson.fromJson(pArray.get(i),GedanBMADetailItem.class);
+                    for (int i = 0; i < plen; i++) {
+                        GedanBMADetailItem geDanGeInfo = mGson.fromJson(pArray.get(i), GedanBMADetailItem.class);
                         mList.add(geDanGeInfo);
                     }
                 } catch (NullPointerException e) {
@@ -179,7 +168,7 @@ public class HotGedanDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_toolbar_forplaying,menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar_forplaying, menu);
 
         return true;
     }
@@ -198,7 +187,6 @@ public class HotGedanDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
@@ -255,6 +243,14 @@ public class HotGedanDetailActivity extends AppCompatActivity {
                     }
                 });
 
+                itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(HotGedanDetailActivity.this, PlayingActivity.class);
+
+                    }
+                });
+
             } else if (itemHolder instanceof CommonItemViewHolder) {
 
                 ((CommonItemViewHolder) itemHolder).textView.setText("(共" + arraylist.size() + "首)");
@@ -281,8 +277,7 @@ public class HotGedanDetailActivity extends AppCompatActivity {
         }
 
 
-
-        public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class ItemViewHolder extends RecyclerView.ViewHolder {
             protected TextView title, artist, trackNumber;
             protected ImageView menu;
 
@@ -292,43 +287,41 @@ public class HotGedanDetailActivity extends AppCompatActivity {
                 this.artist = (TextView) view.findViewById(R.id.song_artist);
                 this.trackNumber = (TextView) view.findViewById(R.id.trackNumber);
                 this.menu = (ImageView) view.findViewById(R.id.popup_menu);
-                view.setOnClickListener(this);
             }
 
-            @Override
-            public void onClick(View v) {
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        try{
-
-                            JsonArray jsonArray = HttpUtil.getResposeJsonObject(BMA.Song.songInfo(BMA.Song.songInfo(arraylist.get(getAdapterPosition()).getSong_id()))).get("songurl").getAsJsonObject()
-                                    .get("url").getAsJsonArray();
-
-                            int len = jsonArray.size();
-//                                                for(int i = 0;i < len; i++){
-//                                                    MusicNet musicNet = gson.fromJson(jsonArray.get(i),MusicNet.class);
-//                                                }
-                            //   MusicNet musicNet = gson.fromJson(jsonArray.get(3),MusicNet.class);
-
-                            mediaPlayer.reset();
-                            mediaPlayer.setDataSource(musicDetailNet.getShow_link());
-                            mediaPlayer.prepare();
-                            mediaPlayer.start();
-//                            MusicPlayer.clearQueue();
-
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, 100);
-
-            }
+//            @Override
+//            public void onClick(View v) {
+//                Handler handler = new Handler();
+//                handler.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        try{
+//
+//                            JsonArray jsonArray = HttpUtil.getResposeJsonObject(BMA.Song.songInfo(BMA.Song.songInfo(arraylist.get(getAdapterPosition()).getSong_id()))).get("songurl").getAsJsonObject()
+//                                    .get("url").getAsJsonArray();
+//
+//                            int len = jsonArray.size();
+////                                                for(int i = 0;i < len; i++){
+////                                                    MusicNet musicNet = gson.fromJson(jsonArray.get(i),MusicNet.class);
+////                                                }
+//                            //   MusicNet musicNet = gson.fromJson(jsonArray.get(3),MusicNet.class);
+//
+//                            mediaPlayer.reset();
+//                            mediaPlayer.setDataSource(musicDetailNet.getShow_link());
+//                            mediaPlayer.prepare();
+//                            mediaPlayer.start();
+////                            MusicPlayer.clearQueue();
+//
+//                        }catch (Exception e){
+//                            e.printStackTrace();
+//                        }
+//
+//                    }
+//                }, 100);
 
         }
-    }
 
+    }
 }
+

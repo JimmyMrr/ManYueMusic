@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:background="@color/green"
-    android:id="@+id/nav_play"
-    android:gravity="center">
+              xmlns:fresco="http://schemas.android.com/apk/res-auto"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="50dp"
+              android:background="@color/green"
+              android:id="@+id/nav_play"
+              android:gravity="center">
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/song_img"
-        android:layout_weight="1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@mipmap/placeholder_disk_210"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:scaleType="centerCrop"
+        fresco:progressBarAutoRotateInterval="1000"
+        fresco:progressBarImage="@mipmap/loading_big"
+        fresco:progressBarImageScaleType="centerInside"
+        fresco:placeholderImage="@mipmap/placeholder_disk_300"
+        fresco:placeholderImageScaleType="centerCrop"
         />
 
     <LinearLayout
@@ -34,11 +40,11 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
     <ImageView
-        android:id="@+id/list_play"
+        android:layout_weight="1"
+        android:id="@+id/previous_play"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:src="@mipmap/ic_featured_play_list_white_36dp"
+        android:src="@mipmap/ic_skip_previous_white_36dp"
         />
     <ImageView
         android:id="@+id/pause_play"

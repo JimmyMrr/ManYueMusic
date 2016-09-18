@@ -1,36 +1,30 @@
 package com.example.ritchie_huang.manyuemusic.Activity;
 
-import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.app.Activity;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.widget.ImageView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.SeekBar;
+import android.widget.TextView;
 
-import com.example.ritchie_huang.manyuemusic.Lyric.GetLyric;
+import com.example.ritchie_huang.manyuemusic.DataItem.GedanNeteaseDetailItem;
 import com.example.ritchie_huang.manyuemusic.Lyric.LyricView;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Service.PlayService;
-import com.example.ritchie_huang.manyuemusic.Util.Api;
 import com.example.ritchie_huang.manyuemusic.Util.Constants;
-import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
 import com.example.ritchie_huang.manyuemusic.Util.SongUtil;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
@@ -38,9 +32,8 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.squareup.okhttp.FormEncodingBuilder;
-import com.squareup.okhttp.RequestBody;
-import com.vistrav.ask.Ask;
+
+import java.util.List;
 
 import jp.wasabeef.fresco.processors.BlurPostprocessor;
 
@@ -77,15 +70,27 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
     private int songDuration;
     private String songName;
     private String songArtist;
+    private String songUrl;
+    private int songItem;
+    private List<GedanNeteaseDetailItem.ResultBean.TracksBean> mList;
+
+    //service
 
     private PlayService.PlayMusicBinder mBinder;
     private ServiceConnection mConnection;
+    private PlayService mPlayService;
 
+    private int[] playingModeId = { R.mipmap.play_icn_one_prs, R.mipmap.play_icn_loop_prs,R.mipmap.play_icn_shuffle};
+    private int[] playingModeControl = {Constants.STATUS_LOOP_ONE,Constants.STATUS_ORDER,Constants.STATUS_RANDOM};
+
+    private int i = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getIntent() != null) {
+            songUrl = getIntent().getStringExtra("songUrl");
+            songItem = getIntent().getIntExtra("songItem", -1);
             albumArtUrl = getIntent().getStringExtra("songBackgroundImage");
             songLyricId = getIntent().getIntExtra("songLyric", -1);
             songDuration = getIntent().getIntExtra("songDuration", -1);
@@ -106,14 +111,15 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
                 finish();
             }
         });
+
         initViews();
 
 
-//        setLyric();
+        Intent intent = new Intent(PlayingActivity.this, PlayService.class);
+        mConnection = new ConnectionService();
+        bindService(intent, mConnection, BIND_AUTO_CREATE);
 
-//        mConnection = new ConnectionService();
-//        bindService(new Intent(PlayingActivity.this, PlayService.class), mConnection, -1);
-        setUpEverything();
+        setOnClickListener();
 
         musicDuration.setText(SongUtil.formatDuration(songDuration));
         song_name.setText(songName);
@@ -124,12 +130,28 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
 
     }
 
+
+
     class ConnectionService implements ServiceConnection {
 
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             mBinder = (PlayService.PlayMusicBinder) iBinder;
-//            mPlayService.setPlayingActivity(PlayingActivity.this);
+            mPlayService = mBinder.getPlayService();
+            mPlayService.setPlayingActivity(PlayingActivity.this);
+            new Thread(){
+                @Override
+                public void run() {
+                    super.run();
+                    mBinder.setCurrent(songItem);
+                    mBinder.startPlay(songUrl,songLyricId);
+//                    mPlayService.initLrc();
+
+                }
+
+
+            }.start();
+
         }
 
         @Override
@@ -139,25 +161,14 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
 
-    private void setUpEverything() {
+    private void setOnClickListener() {
         playingMode.setOnClickListener(this);
-
+        playingNext.setOnClickListener(this);
+        playingPre.setOnClickListener(this);
+        playingPlay.setOnClickListener(this);
     }
 
-    private void setLyric() {
-        final RequestBody formbody = new FormEncodingBuilder()
-                .add("os", "pc")
-                .add("id", String.valueOf(songLyricId))
-                .add("lv", String.valueOf(-1))
-                .add("kv", String.valueOf(-1))
-                .add("tv", String.valueOf(-1))
-                .build();
 
-
-        new GetLyric().readLyric(Api.SONG_LRC, formbody, PlayingActivity.this, false);
-
-
-    }
 
     private void setSongBackgroundImage() {
         ImageRequest request = ImageRequestBuilder.fromRequest(ImageRequest.fromUri(albumArtUrl))
@@ -217,7 +228,12 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.playing_mode:
-
+                i++;
+                playingMode.setImageResource(playingModeId[i%3]);
+                Intent intent = new Intent(this, PlayService.class);
+                intent.setAction(Constants.CONTROL_ACTION);
+                intent.putExtra("control", playingModeControl[i%3]);
+                sendBroadcast(intent);
                 break;
 
             case R.id.playing_next:
@@ -234,6 +250,8 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
                 break;
         }
     }
+
+
 
     public class MyReceiver extends BroadcastReceiver {
 
@@ -253,5 +271,6 @@ public class PlayingActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unbindService(mConnection);
     }
 }

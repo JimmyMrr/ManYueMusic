@@ -1,14 +1,10 @@
 package com.example.ritchie_huang.manyuemusic.Activity;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,25 +18,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.ritchie_huang.manyuemusic.DataItem.GedanBMADetailItem;
-import com.example.ritchie_huang.manyuemusic.DataItem.GedanSrcBMA;
 import com.example.ritchie_huang.manyuemusic.DataItem.MusicDetailNet;
 import com.example.ritchie_huang.manyuemusic.DataItem.MusicInfoItem;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Util.BMA;
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
-import com.example.ritchie_huang.manyuemusic.Util.ImageUtils;
 import com.example.ritchie_huang.manyuemusic.ViewHolder.CommonItemViewHolder;
 import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
-import com.facebook.binaryresource.BinaryResource;
-import com.facebook.binaryresource.FileBinaryResource;
-import com.facebook.cache.common.CacheKey;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.gson.Gson;
@@ -48,7 +36,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -59,15 +46,16 @@ public class HotRadioDetailActivity extends AppCompatActivity {
 
     Gson mGson;
     private String mPlayListId;
-    private String mAlbumPath,mAlbumName, mAlbumDes,mArtistName;
+    private String mAlbumPath, mAlbumName, mAlbumDes, mArtistName;
     private List<MusicInfoItem> mList;
     private SimpleDraweeView albumSmallPic;
     private SimpleDraweeView albumArt;
-    private TextView albumName,albumDes;
+    private TextView albumName, albumDes;
     private RecyclerView mRecyclerView;
     private PlaylistDetailAdapter mAdapter;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     MediaPlayer mediaPlayer = new MediaPlayer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -127,7 +115,7 @@ public class HotRadioDetailActivity extends AppCompatActivity {
 
         ImageRequest request =
                 ImageRequestBuilder.fromRequest(ImageRequest.fromUri(Uri.parse(mAlbumPath)))
-                        .setResizeOptions(new ResizeOptions(50,50))
+                        .setResizeOptions(new ResizeOptions(50, 50))
                         .setPostprocessor(new BlurPostprocessor(this, 12, 2))
                         .build();
 
@@ -142,7 +130,6 @@ public class HotRadioDetailActivity extends AppCompatActivity {
     }
 
 
-
     MusicDetailNet musicDetailNet;
 
     private void loadAllLists() {
@@ -152,18 +139,18 @@ public class HotRadioDetailActivity extends AppCompatActivity {
             protected Void doInBackground(final Void... unused) {
 
                 try {
-                    JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.Lebo.albumInfo(mPlayListId,10)).get("result").getAsJsonObject();
+                    JsonObject jsonObject = HttpUtil.getResposeJsonObject(BMA.Lebo.albumInfo(mPlayListId, 10)).get("result").getAsJsonObject();
                     JsonArray pArray = jsonObject.get("latest_song").getAsJsonArray();
                     int plen = pArray.size();
 
                     Iterator it = pArray.iterator();
-                    while(it.hasNext()){
-                        JsonElement e = (JsonElement)it.next();
+                    while (it.hasNext()) {
+                        JsonElement e = (JsonElement) it.next();
                         JsonObject jo = e.getAsJsonObject();
                         MusicInfoItem mi = new MusicInfoItem();
-                        mi.artist =  getStringValue(jo, "song_duration");
+                        mi.artist = getStringValue(jo, "song_duration");
                         mi.musicName = getStringValue(jo, "song_name");
-                        mi.songId = Integer.parseInt(getStringValue(jo,"song_id"));
+                        mi.songId = Integer.parseInt(getStringValue(jo, "song_id"));
 
                         mList.add(mi);
                     }
@@ -185,12 +172,12 @@ public class HotRadioDetailActivity extends AppCompatActivity {
 
     }
 
-    private String getStringValue(JsonObject jsonObject,String key){
+    private String getStringValue(JsonObject jsonObject, String key) {
         JsonElement nameElement = jsonObject.get(key);
         return nameElement.getAsString();
     }
 
-    private int getIntValue(JsonObject jsonObject,String key){
+    private int getIntValue(JsonObject jsonObject, String key) {
         JsonElement nameElement = jsonObject.get(key);
         return nameElement.getAsInt();
     }
@@ -198,7 +185,7 @@ public class HotRadioDetailActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_toolbar_forplaying,menu);
+        getMenuInflater().inflate(R.menu.menu_toolbar_forplaying, menu);
 
         return true;
     }
@@ -217,7 +204,6 @@ public class HotRadioDetailActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
 
 
     @Override
@@ -300,8 +286,7 @@ public class HotRadioDetailActivity extends AppCompatActivity {
         }
 
 
-
-        public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class ItemViewHolder extends RecyclerView.ViewHolder {
             protected TextView title, artist, trackNumber;
             protected ImageView menu;
 
@@ -311,35 +296,10 @@ public class HotRadioDetailActivity extends AppCompatActivity {
                 this.artist = (TextView) view.findViewById(R.id.song_artist);
                 this.trackNumber = (TextView) view.findViewById(R.id.trackNumber);
                 this.menu = (ImageView) view.findViewById(R.id.popup_menu);
-                view.setOnClickListener(this);
             }
 
-            @Override
-            public void onClick(View v) {
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        try{
-
-
-                            mediaPlayer.reset();
-                            mediaPlayer.setDataSource(musicDetailNet.getShow_link());
-                            mediaPlayer.prepare();
-                            mediaPlayer.start();
-//                            MusicPlayer.clearQueue();
-
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, 100);
-
-            }
 
         }
     }
-
 }
+

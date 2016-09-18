@@ -19,6 +19,7 @@ import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Service.PlayService;
 import com.example.ritchie_huang.manyuemusic.Util.LocalSongs;
 import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.List;
 
@@ -28,7 +29,7 @@ import java.util.List;
 public class AllSongsFrag extends Fragment {
 
     //HomeActivity的控件
-    private ImageView song_image;
+    private SimpleDraweeView song_image;
     private TextView song_name;
     private TextView song_artist;
     private ImageView list_play;
@@ -89,10 +90,10 @@ public class AllSongsFrag extends Fragment {
         recyclerView.setHasFixedSize(true);
 
         //初始化HomeActivity中的控件
-        song_image = (ImageView) getActivity().findViewById(R.id.song_img);
+        song_image = (SimpleDraweeView) getActivity().findViewById(R.id.song_img);
         song_artist = (TextView) getActivity().findViewById(R.id.song_artist);
         song_name = (TextView) getActivity().findViewById(R.id.song_name);
-        list_play = (ImageView) getActivity().findViewById(R.id.list_play);
+        list_play = (ImageView) getActivity().findViewById(R.id.previous_play);
         next_play = (ImageView) getActivity().findViewById(R.id.next_play);
         pause_play = (ImageView) getActivity().findViewById(R.id.pause_play);
 

@@ -230,6 +230,7 @@ public class PersonalRecommendFrag extends Fragment {
                 recyclerView.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL_LIST));
                 recyclerView.setHasFixedSize(true);
                 recyclerView.setAdapter(adapter);
+
                 adapter.setOnItemClickListener(new OnRecyclerItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {

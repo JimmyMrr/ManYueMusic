@@ -1,14 +1,10 @@
 package com.example.ritchie_huang.manyuemusic.Activity;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,25 +18,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.ritchie_huang.manyuemusic.DataItem.GedanBMADetailItem;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanSrcBMA;
 import com.example.ritchie_huang.manyuemusic.DataItem.MusicDetailNet;
 import com.example.ritchie_huang.manyuemusic.DataItem.MusicInfoItem;
 import com.example.ritchie_huang.manyuemusic.R;
-import com.example.ritchie_huang.manyuemusic.Util.BMA;
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
-import com.example.ritchie_huang.manyuemusic.Util.ImageUtils;
 import com.example.ritchie_huang.manyuemusic.ViewHolder.CommonItemViewHolder;
 import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
-import com.facebook.binaryresource.BinaryResource;
-import com.facebook.binaryresource.FileBinaryResource;
-import com.facebook.cache.common.CacheKey;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.gson.Gson;
@@ -48,7 +36,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -76,12 +63,12 @@ public class HotNewsAlbumDetailActivity extends AppCompatActivity {
 
         mGson = new Gson();
         if (getIntent().getExtras() != null) {
-            mPlayListId = getIntent().getLongExtra("albumid",-1);
+            mPlayListId = getIntent().getLongExtra("albumid", -1);
             mAlbumName = getIntent().getStringExtra("albumname");
             mAlbumPath = getIntent().getStringExtra("albumart");
             mAlbumDes = getIntent().getStringExtra("albumdesc");
             mArtistName = getIntent().getStringExtra("artistname");
-            publishTime = getIntent().getIntExtra("publishtime",-1);
+            publishTime = getIntent().getIntExtra("publishtime", -1);
         }
         setContentView(R.layout.activity_gedandetail);
 
@@ -129,7 +116,7 @@ public class HotNewsAlbumDetailActivity extends AppCompatActivity {
         albumSmallPic.setImageURI(Uri.parse(mAlbumPath));
         ImageRequest request =
                 ImageRequestBuilder.fromRequest(ImageRequest.fromUri(Uri.parse(mAlbumPath)))
-                        .setResizeOptions(new ResizeOptions(50,50))
+                        .setResizeOptions(new ResizeOptions(50, 50))
                         .setPostprocessor(new BlurPostprocessor(this, 12, 2))
                         .build();
 
@@ -141,10 +128,7 @@ public class HotNewsAlbumDetailActivity extends AppCompatActivity {
         albumArt.setController(controller);
 
 
-
-
     }
-
 
 
     GedanSrcBMA gedanSrcBMA;
@@ -164,8 +148,8 @@ public class HotNewsAlbumDetailActivity extends AppCompatActivity {
                             .get("songs").getAsJsonArray();
 
                     Iterator it = jsonArray.iterator();
-                    while(it.hasNext()){
-                        JsonElement e = (JsonElement)it.next();
+                    while (it.hasNext()) {
+                        JsonElement e = (JsonElement) it.next();
                         JsonObject jo = e.getAsJsonObject();
                         MusicInfoItem mi = new MusicInfoItem();
                         mi.url = getStringValue(jo, "mp3Url");
@@ -306,7 +290,7 @@ public class HotNewsAlbumDetailActivity extends AppCompatActivity {
         }
 
 
-        public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public class ItemViewHolder extends RecyclerView.ViewHolder {
             protected TextView title, artist, trackNumber;
             protected ImageView menu;
 
@@ -316,33 +300,8 @@ public class HotNewsAlbumDetailActivity extends AppCompatActivity {
                 this.artist = (TextView) view.findViewById(R.id.song_artist);
                 this.trackNumber = (TextView) view.findViewById(R.id.trackNumber);
                 this.menu = (ImageView) view.findViewById(R.id.popup_menu);
-                view.setOnClickListener(this);
             }
 
-            @Override
-            public void onClick(View v) {
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        try {
-
-
-                            mediaPlayer.reset();
-                            mediaPlayer.setDataSource(musicDetailNet.getShow_link());
-                            mediaPlayer.prepare();
-                            mediaPlayer.start();
-//                            MusicPlayer.clearQueue();
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, 100);
-
-            }
 
         }
     }

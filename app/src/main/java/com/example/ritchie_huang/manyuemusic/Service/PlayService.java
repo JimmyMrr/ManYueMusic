@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Handler;
@@ -14,7 +15,6 @@ import android.widget.Toast;
 
 import com.example.ritchie_huang.manyuemusic.Activity.PlayingActivity;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanNeteaseDetailItem;
-import com.example.ritchie_huang.manyuemusic.DataItem.MP3InfoItem;
 import com.example.ritchie_huang.manyuemusic.Lyric.GetLyric;
 import com.example.ritchie_huang.manyuemusic.Lyric.LyricContent;
 import com.example.ritchie_huang.manyuemusic.Util.Api;
@@ -33,12 +33,12 @@ public class PlayService<T> extends Service {
 
     private MediaPlayer mMediaPlayer;
     private String mMusicPath;
-    private int mMusicPlayerStatus = Constants.STATUS_ORDER;
+    private int mMusicPlayerStatus;
     private boolean isPaused;
     private boolean isPlaying;
-    private List<T> mSongList;
+    private static List<?> mSongList;
     private int current = 0;
-    private int currentTime;
+    private int  currentTime;
     private int musicDuration;
     private MyReceiver mMyReceiver;
 
@@ -47,6 +47,9 @@ public class PlayService<T> extends Service {
     private List<LyricContent> mLyricContentList = new ArrayList<>();
     private int index = 0;
     private PlayingActivity mPlayingActivity;
+
+
+    private int songLyricId;
 
 
     private Handler mHandler = new Handler() {
@@ -70,8 +73,11 @@ public class PlayService<T> extends Service {
     public void onCreate() {
         super.onCreate();
         mMediaPlayer = new MediaPlayer();
+        mMyReceiver = new MyReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Constants.CONTROL_ACTION);
 
-
+        registerReceiver(mMyReceiver, intentFilter);
         //播放完成监听
         mMediaPlayer.setOnCompletionListener(new MyCompletionListener());
 
@@ -85,6 +91,7 @@ public class PlayService<T> extends Service {
 
     @Override
     public void onDestroy() {
+        unregisterReceiver(mMyReceiver);
         if (mMediaPlayer != null) {
             mMediaPlayer.stop();
             mMediaPlayer.release();
@@ -118,6 +125,10 @@ public class PlayService<T> extends Service {
             intent.putExtra("duration", musicDuration);
             sendBroadcast(intent);
         }
+    }
+
+    public static void setPlayList(List<?> list) {
+        mSongList = list;
     }
 
 
@@ -156,21 +167,23 @@ public class PlayService<T> extends Service {
             mMusicPath = currentSong.getMp3Url();
         }
 
-        public void setPlayList(List<T> list) {
-            mSongList = list;
-        }
 
         public void setCurrent(int num) {
             current = num;
         }
 
-        public void startPlay(String dataSource) {
+        public void startPlay(String dataSource, int lyricId) {
+            songLyricId = lyricId;
+            isPlaying = true;
+
             mMusicPath = dataSource;
             mMediaPlayer.reset();
+
             try {
                 mMediaPlayer.setDataSource(dataSource);
                 mMediaPlayer.prepare();
                 mMediaPlayer.start();
+                mMediaPlayer.setOnCompletionListener(new MyCompletionListener());
 
 
             } catch (IOException e) {
@@ -190,14 +203,14 @@ public class PlayService<T> extends Service {
         public void previous() {
             Intent intent = new Intent(Constants.UPDATE_ACTION);
             current--;
-            if (current < 0) {
+            if (current > 0) {
                 intent.putExtra("current", current);
                 setPlayingPath(current);
                 sendBroadcast(intent);
                 play(0);
 
             } else {
-                Toast.makeText(mPlayingActivity, "错误", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mPlayingActivity, "已经到头了 :)", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -212,7 +225,7 @@ public class PlayService<T> extends Service {
                 sendBroadcast(intent);
                 play(0);
             } else {
-                Toast.makeText(mPlayingActivity, "错误", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mPlayingActivity, "已经到底啦 :)", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -236,11 +249,11 @@ public class PlayService<T> extends Service {
         public void onCompletion(MediaPlayer mediaPlayer) {
             //顺序播放
             if (mMusicPlayerStatus == Constants.STATUS_ORDER) {
-                current++;
+                ++current;
                 if (current <= mSongList.size() - 1) {
                     Intent intent = new Intent(Constants.UPDATE_ACTION);
                     sendBroadcast(intent);
-//                        mMusicPath = mSongList.get(current).getPath();
+                    setSongPath(current);
                     play(0);
                 } else {
                     mediaPlayer.seekTo(0);
@@ -263,9 +276,15 @@ public class PlayService<T> extends Service {
         }
     }
 
+    private void setSongPath(int num) {
+        GedanNeteaseDetailItem.ResultBean.TracksBean currentSong = (GedanNeteaseDetailItem.ResultBean.TracksBean) mSongList.get(num);
+        mMusicPath = currentSong.getMp3Url();
+    }
+
 
     //播放
     private void play(int i) {
+
         mMediaPlayer.reset();
         try {
             mMediaPlayer.setDataSource(mMusicPath);
@@ -288,12 +307,12 @@ public class PlayService<T> extends Service {
         this.mPlayingActivity = activity;
     }
 
-    private void initLrc() {
+    public void initLrc() {
         mGetLyric = new GetLyric();
         GedanNeteaseDetailItem.ResultBean.TracksBean localItem = (GedanNeteaseDetailItem.ResultBean.TracksBean) mSongList.get(current);
         final RequestBody formbody = new FormEncodingBuilder()
                 .add("os", "pc")
-                .add("id", String.valueOf(localItem.getId()))
+                .add("id", String.valueOf(songLyricId))
                 .add("lv", String.valueOf(-1))
                 .add("kv", String.valueOf(-1))
                 .add("tv", String.valueOf(-1))

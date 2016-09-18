@@ -139,10 +139,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:clickable="true"
                     android:layout_weight="1"
-                    android:src="@mipmap/play_icn_loop_prs"/>
+                    android:src="@mipmap/play_icn_one_prs"/>
 
                 <ImageView
+                    android:clickable="true"
                     android:id="@+id/playing_pre"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -151,6 +153,7 @@
                     android:src="@mipmap/play_btn_prev"/>
 
                 <ImageView
+                    android:clickable="true"
                     android:id="@+id/playing_play"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -159,6 +162,7 @@
                     android:src="@mipmap/play_rdi_btn_pause"/>
 
                 <ImageView
+                    android:clickable="true"
                     android:id="@+id/playing_next"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -167,6 +171,7 @@
                     android:src="@mipmap/play_btn_next"/>
 
                 <ImageView
+                    android:clickable="true"
                     android:id="@+id/playing_playlist"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

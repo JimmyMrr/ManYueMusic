@@ -1,18 +1,12 @@
 package com.example.ritchie_huang.manyuemusic.Activity;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,35 +20,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.ritchie_huang.manyuemusic.DataItem.GedanBMADetailItem;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanNeteaseDetailItem;
 import com.example.ritchie_huang.manyuemusic.DataItem.GedanSrcBMA;
 import com.example.ritchie_huang.manyuemusic.DataItem.MusicDetailNet;
 import com.example.ritchie_huang.manyuemusic.R;
 import com.example.ritchie_huang.manyuemusic.Service.PlayService;
 import com.example.ritchie_huang.manyuemusic.Util.Api;
-import com.example.ritchie_huang.manyuemusic.Util.BMA;
 import com.example.ritchie_huang.manyuemusic.Util.HttpUtil;
-import com.example.ritchie_huang.manyuemusic.Util.ImageUtils;
 import com.example.ritchie_huang.manyuemusic.ViewHolder.CommonItemViewHolder;
 import com.example.ritchie_huang.manyuemusic.Widget.DividerItemDecoration;
-import com.facebook.binaryresource.BinaryResource;
-import com.facebook.binaryresource.FileBinaryResource;
-import com.facebook.cache.common.CacheKey;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 import com.facebook.imagepipeline.common.ResizeOptions;
-import com.facebook.imagepipeline.core.ImagePipelineFactory;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,21 +78,21 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
 
         initViews();
 
-        Intent intent = new Intent(this, PlayService.class);
+//        Intent intent = new Intent(this, PlayService.class);
 
 
-        conn = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-                mBinder = (PlayService.PlayMusicBinder) iBinder;
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName componentName) {
-
-            }
-        };
-        bindService(intent,conn,0);
+//        conn = new ServiceConnection() {
+//            @Override
+//            public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+//                mBinder = (PlayService.PlayMusicBinder) iBinder;
+//            }
+//
+//            @Override
+//            public void onServiceDisconnected(ComponentName componentName) {
+//
+//            }
+//        };
+//        bindService(intent,conn,BIND_AUTO_CREATE);
 
 
     }
@@ -154,7 +137,7 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
 
         ImageRequest request =
                 ImageRequestBuilder.fromRequest(ImageRequest.fromUri(Uri.parse(mAlbumPath)))
-                        .setResizeOptions(new ResizeOptions(50,50))
+                        .setResizeOptions(new ResizeOptions(50, 50))
                         .setPostprocessor(new BlurPostprocessor(this, 12, 2))
                         .build();
 
@@ -238,7 +221,6 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unbindService(conn);
     }
 
     class PlaylistDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -289,27 +271,20 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
 
-                        new Thread(){
-
-                            @Override
-                            public void run() {
-                                super.run();
-
-                                mBinder.setPlayList(arraylist.get(0).getResult().getTracks());
-                                mBinder.setCurrent(i-1);
-                                mBinder.startPlay(localItem.getMp3Url());
-
-                                Intent intent = new Intent(NeteaseGedanDetailActivity.this, PlayingActivity.class);
-                                intent.putExtra("songBackgroundImage",localItem.getAlbum().getPicUrl());
-                                intent.putExtra("songLyric", localItem.getId());
-                                intent.putExtra("songName", localItem.getName());
-                                intent.putExtra("songArtist", localItem.getArtists().get(0).getName());
-                                intent.putExtra("songDuration", localItem.getDuration());
-                                startActivity(intent);
+                        PlayService.setPlayList(arraylist.get(0).getResult().getTracks());
+                        Intent intent = new Intent(NeteaseGedanDetailActivity.this, PlayingActivity.class);
+                        intent.putExtra("songItem", i - 1);
+                        intent.putExtra("songUrl", localItem.getMp3Url());
+                        intent.putExtra("songBackgroundImage", localItem.getAlbum().getPicUrl());
+                        intent.putExtra("songLyric", localItem.getId());
+                        intent.putExtra("songName", localItem.getName());
+                        intent.putExtra("songArtist", localItem.getArtists().get(0).getName());
+                        intent.putExtra("songDuration", localItem.getDuration());
+                        startActivity(intent);
 
 
-                            }
-                        }.start();
+                    }
+//                        }.start();
 
 //                        mediaPlayer.reset();
 //                        try {
@@ -319,84 +294,54 @@ public class NeteaseGedanDetailActivity extends AppCompatActivity {
 //                        } catch (IOException e) {
 //                            e.printStackTrace();
 //                        }
-                    }
-                });
-
-            } else if (itemHolder instanceof CommonItemViewHolder) {
-
-                ((CommonItemViewHolder) itemHolder).textView.setText("(共" + arraylist.get(0).getResult().getTracks().size() + "首)");
-
-                ((CommonItemViewHolder) itemHolder).select.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-
-                    }
-                });
-
-            }
+//                }
+            });
 
         }
 
-        @Override
-        public int getItemCount() {
-            return (null != (arraylist.get(0).getResult().getTracks())) ? (arraylist.get(0).getResult().getTracks().size() + 1) : 0;
-        }
+        else if(itemHolder instanceof CommonItemViewHolder)
 
-        public void updateDataSet(long playlistid, ArrayList<GedanNeteaseDetailItem> arraylist) {
-            this.arraylist = arraylist;
-            this.playlistId = playlistid;
-        }
+        {
 
+            ((CommonItemViewHolder) itemHolder).textView.setText("(共" + arraylist.get(0).getResult().getTracks().size() + "首)");
 
-        public class ItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-            protected TextView title, artist, trackNumber;
-            protected ImageView menu;
-
-            public ItemViewHolder(View view) {
-                super(view);
-                this.title = (TextView) view.findViewById(R.id.song_title);
-                this.artist = (TextView) view.findViewById(R.id.song_artist);
-                this.trackNumber = (TextView) view.findViewById(R.id.trackNumber);
-                this.menu = (ImageView) view.findViewById(R.id.popup_menu);
-                view.setOnClickListener(this);
-            }
-
-            @Override
-            public void onClick(View v) {
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        try {
+            ((CommonItemViewHolder) itemHolder).select.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
 
-
-//                            JsonArray jsonArray = HttpUtil.getResposeJsonObject(BMA.Song.songInfo(BMA.Song.songInfo(arraylist.get(getAdapterPosition()).getSong_id()))).get("songurl").getAsJsonObject()
-//                                    .get("url").getAsJsonArray();
-
-//                            int len = jsonArray.size();
-//                                                for(int i = 0;i < len; i++){
-//                                                    MusicNet musicNet = gson.fromJson(jsonArray.get(i),MusicNet.class);
-//                                                }
-                            //   MusicNet musicNet = gson.fromJson(jsonArray.get(3),MusicNet.class);
-//
-//                            mediaPlayer.reset();
-//                            mediaPlayer.setDataSource();
-//                            mediaPlayer.prepare();
-//                            mediaPlayer.start();
-//                            MusicPlayer.clearQueue();
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, 100);
-
-            }
+                }
+            });
 
         }
+
     }
+
+    @Override
+    public int getItemCount() {
+        return (null != (arraylist.get(0).getResult().getTracks())) ? (arraylist.get(0).getResult().getTracks().size() + 1) : 0;
+    }
+
+    public void updateDataSet(long playlistid, ArrayList<GedanNeteaseDetailItem> arraylist) {
+        this.arraylist = arraylist;
+        this.playlistId = playlistid;
+    }
+
+
+    public class ItemViewHolder extends RecyclerView.ViewHolder {
+        protected TextView title, artist, trackNumber;
+        protected ImageView menu;
+
+        public ItemViewHolder(View view) {
+            super(view);
+            this.title = (TextView) view.findViewById(R.id.song_title);
+            this.artist = (TextView) view.findViewById(R.id.song_artist);
+            this.trackNumber = (TextView) view.findViewById(R.id.trackNumber);
+            this.menu = (ImageView) view.findViewById(R.id.popup_menu);
+        }
+
+
+
+    }
+}
 }

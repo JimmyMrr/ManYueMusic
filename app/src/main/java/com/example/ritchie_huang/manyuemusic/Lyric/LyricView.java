@@ -21,8 +21,8 @@ public class LyricView extends TextView {
     private float height;
     private Paint currentPaint;             //用来描绘当前正在播放的那句歌词
     private Paint notCurrentPaint;          //用来描绘非当前歌词
-    private float textHeight = 50;
-    private float textSize = 30;
+    private float textHeight = 60;
+    private float textSize = 40;
     private int index = 0;                  //当前歌词的索引
 
 
@@ -88,16 +88,16 @@ public class LyricView extends TextView {
         }
 
 
-        currentPaint.setColor(getResources().getColor(R.color.test_color));
-        notCurrentPaint.setColor(getResources().getColor(R.color.white_text));
+        currentPaint.setColor(getResources().getColor(R.color.white_text));
+        notCurrentPaint.setColor(getResources().getColor(R.color.light_grey));
 
 
         currentPaint.setTextSize(40);
-        currentPaint.setTypeface(Typeface.DEFAULT_BOLD);
+        currentPaint.setTypeface(Typeface.MONOSPACE);
 
 
         notCurrentPaint.setTextSize(textSize);
-        notCurrentPaint.setTypeface(Typeface.DEFAULT);
+        notCurrentPaint.setTypeface(Typeface.MONOSPACE);
 
 
         try {
