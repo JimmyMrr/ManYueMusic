@@ -24,7 +24,7 @@ import android.widget.TextView;
 import com.music.manyue.DataItem.NeteaseSongList;
 import com.music.manyue.DataItem.GedanSrcBMA;
 import com.music.manyue.DataItem.MusicDetailNet;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.music.manyue.Service.PlayService;
 import com.music.manyue.API.API;
 import com.music.manyue.Util.HttpUtil;

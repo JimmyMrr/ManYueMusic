@@ -1,6 +1,5 @@
 package com.music.manyue.Activity;
 
-import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -10,8 +9,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.ritchie_huang.manyuemusic.R;
-import com.music.manyue.Service.MusicPlayService;
+import com.music.manyue.R;
+import com.music.manyue.MusicPlayer.MusicPlayService;
 
 public class MusicPlayActivity extends AppCompatActivity implements View.OnClickListener {
     Button mStartServiceBtn;

@@ -26,7 +26,7 @@ import com.music.manyue.DataItem.Focus;
 import com.music.manyue.DataItem.GedanHotItem;
 import com.music.manyue.DataItem.NewsAlbumItem;
 import com.music.manyue.DataItem.RadioItem;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.music.manyue.Util.BMA;
 import com.music.manyue.Util.HttpUtil;
 import com.music.manyue.Util.NetworkUtils;

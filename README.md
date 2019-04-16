@@ -3,7 +3,7 @@
 ## 1 网易云音乐API描述接口[API.java][1]
 
 ### 1.1 网易云音乐的层次
-- 网易云音乐Fragment[AllPlayListFromNeteaseFrag.java][2]
+- 网易云音乐Fragment [AllPlayListFromNeteaseFrag.java][2]
     - 音乐歌单列表 [NeteasePlayList.java][3]
         - 音乐歌单 
             - 音乐列表 [NeteaseSongList.java][4]

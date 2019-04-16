@@ -16,13 +16,13 @@ import android.widget.TextView;
 
 import com.music.manyue.Activity.BMAGedanDetailActivity;
 import com.music.manyue.DataItem.GedanListBMAItem;
-import com.example.ritchie_huang.manyuemusic.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.music.manyue.R;
 
 import java.util.List;
 

@@ -4,26 +4,24 @@ package com.music.manyue.Activity;
 import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-
 import android.view.Window;
 import android.widget.FrameLayout;
 
 import com.music.manyue.Fragment.HomeFrag;
 import com.music.manyue.Listener.PermissionInterface;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.music.manyue.Util.PermissionHelper;
 
 import java.util.ArrayList;

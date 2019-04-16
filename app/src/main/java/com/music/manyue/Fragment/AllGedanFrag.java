@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 
 import java.util.ArrayList;
 import java.util.List;

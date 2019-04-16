@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.ritchie_huang.manyuemusic">
+    package="com.music.manyue">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
@@ -45,7 +45,7 @@
         <!-- </intent-filter> -->
         <!-- </activity> -->
         <service android:name="com.music.manyue.Service.PlayService" />
-        <service android:name="com.music.manyue.Service.MusicPlayService" />
+        <service android:name="com.music.manyue.MusicPlayer.MusicPlayService" />
 
 
         <activity

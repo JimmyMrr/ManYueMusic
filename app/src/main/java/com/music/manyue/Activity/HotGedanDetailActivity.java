@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.music.manyue.DataItem.GedanBMADetailItem;
 import com.music.manyue.DataItem.GedanSrcBMA;
 import com.music.manyue.DataItem.MusicDetailNet;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.music.manyue.Util.BMA;
 import com.music.manyue.Util.HttpUtil;
 import com.music.manyue.ViewHolder.CommonItemViewHolder;

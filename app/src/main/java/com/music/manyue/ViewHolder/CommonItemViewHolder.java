@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 
 /**
  * Created by ritchie-huang on 16-8-9.

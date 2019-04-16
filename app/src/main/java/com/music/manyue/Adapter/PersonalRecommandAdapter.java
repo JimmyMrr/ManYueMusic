@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.music.manyue.Listener.OnRecyclerItemClickListener;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 
 import java.util.List;
 

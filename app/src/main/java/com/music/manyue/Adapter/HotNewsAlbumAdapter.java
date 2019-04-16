@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.music.manyue.Activity.HotNewsAlbumDetailActivity;
 import com.music.manyue.DataItem.NewsAlbumItem;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;

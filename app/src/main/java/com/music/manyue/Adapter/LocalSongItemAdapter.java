@@ -10,7 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.music.manyue.DataItem.MP3InfoItem;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.music.manyue.ViewHolder.CommonItemViewHolder;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package com.music.manyue;
 import android.app.Application;
 import android.content.Intent;
 
-import com.music.manyue.Service.PlayService;
+import com.music.manyue.MusicPlayer.MusicPlayService;
 import com.facebook.drawee.backends.pipeline.Fresco;
 
 /**
@@ -17,7 +17,8 @@ public class MyApplication extends Application {
         Fresco.initialize(this);
 
 
-        startService(new Intent(this, PlayService.class));
+        startService(new Intent(this, MusicPlayService.class));
+//        startService(new Intent(this, PlayService.class));
 
     }
 

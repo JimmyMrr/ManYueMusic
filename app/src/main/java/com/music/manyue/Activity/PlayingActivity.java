@@ -23,7 +23,7 @@ import android.widget.TextView;
 import com.music.manyue.DataItem.GedanNeteaseDetailItem;
 import com.music.manyue.DataItem.NeteaseSongList;
 import com.music.manyue.Lyric.LyricView;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.music.manyue.Service.PlayService;
 import com.music.manyue.Util.Constants;
 import com.music.manyue.Util.SongUtil;

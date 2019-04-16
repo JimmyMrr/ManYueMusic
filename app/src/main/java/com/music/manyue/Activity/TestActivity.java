@@ -9,8 +9,8 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.ritchie_huang.manyuemusic.R;
 import com.music.manyue.API.API;
+import com.music.manyue.R;
 import com.music.manyue.Util.PersistentCookieStore;
 import com.squareup.okhttp.Call;
 import com.squareup.okhttp.Callback;

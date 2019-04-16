@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.music.manyue.Adapter.AllGedanFromBMAAdapter;
 import com.music.manyue.DataItem.GedanListBMAItem;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.music.manyue.Util.BMA;
 import com.music.manyue.Util.HttpUtil;
 import com.music.manyue.Widget.DividerItemDecoration;

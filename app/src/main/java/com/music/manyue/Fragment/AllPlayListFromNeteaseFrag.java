@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import com.music.manyue.Adapter.AllGedanFromNeteaseListAdapter;
 import com.music.manyue.DataItem.NeteasePlayList;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.music.manyue.API.API;
 import com.music.manyue.Util.HttpUtil;
 import com.music.manyue.Util.NetworkUtils;

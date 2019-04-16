@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.inputmethod.InputMethodManager;
 
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 

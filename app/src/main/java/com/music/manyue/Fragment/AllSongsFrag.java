@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.music.manyue.Activity.PlayingActivity;
 import com.music.manyue.Adapter.LocalSongItemAdapter;
 import com.music.manyue.DataItem.MP3InfoItem;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.music.manyue.Service.PlayService;
 import com.music.manyue.Util.LocalSongs;
 import com.music.manyue.Widget.DividerItemDecoration;

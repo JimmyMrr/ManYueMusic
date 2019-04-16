@@ -1,4 +1,4 @@
-package com.music.manyue.Service;
+package com.music.manyue.MusicPlayer;
 
 import android.app.Service;
 import android.content.Intent;

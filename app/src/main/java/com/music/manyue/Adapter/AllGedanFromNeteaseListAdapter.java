@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.music.manyue.Activity.NeteaseGedanDetailActivity;
 import com.music.manyue.DataItem.GedanListNeteaseItem;
 import com.music.manyue.DataItem.NeteasePlayList;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;

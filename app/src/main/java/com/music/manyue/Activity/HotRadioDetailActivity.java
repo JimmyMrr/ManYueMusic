@@ -20,7 +20,7 @@ import android.widget.TextView;
 
 import com.music.manyue.DataItem.MusicDetailNet;
 import com.music.manyue.DataItem.MusicInfoItem;
-import com.example.ritchie_huang.manyuemusic.R;
+import com.music.manyue.R;
 import com.music.manyue.Util.BMA;
 import com.music.manyue.Util.HttpUtil;
 import com.music.manyue.ViewHolder.CommonItemViewHolder;
