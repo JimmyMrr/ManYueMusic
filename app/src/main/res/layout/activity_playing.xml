@@ -67,7 +67,7 @@
             app:layout_heightPercent="65%">
 
 
-            <com.example.ritchie_huang.manyuemusic.Lyric.LyricView
+            <com.music.manyue.Lyric.LyricView
                 android:id="@+id/lyricView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

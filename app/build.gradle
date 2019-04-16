@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    compileSdkVersion 28
+    buildToolsVersion "28.0.3"
 
     defaultConfig {
         applicationId "com.example.ritchie_huang.manyuemusic"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -20,18 +20,24 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:design:24.2.0'
-    compile files('libs/jsoup-1.9.2.jar')
-    compile 'com.facebook.fresco:fresco:0.12.0'
-    compile 'com.bigkoo:convenientbanner:2.0.5'
-    compile 'com.squareup.okhttp:okhttp:2.7.5'
-    compile 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
-    compile 'com.android.support:percent:24.2.0'
-    compile files('libs/gson-2.2.4.jar')
-    compile 'com.readystatesoftware.systembartint:systembartint:1.0.3'
-    compile 'jp.wasabeef:fresco-processors:2.0.0'
-    compile 'com.vistrav:ask:2.4'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+//    implementation files('libs/jsoup-1.9.2.jar')
+    implementation 'com.facebook.fresco:fresco:1.13.0'
+    implementation 'com.bigkoo:convenientbanner:2.0.5'
+    implementation 'com.squareup.okhttp:okhttp:2.7.5'
+    implementation 'com.squareup.okhttp:okhttp-urlconnection:2.7.5'
+    implementation 'com.android.support:percent:28.0.0'
+//    implementation files('libs/gson-2.2.4.jar')
+    implementation 'org.jsoup:jsoup:1.11.3'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
+    implementation 'jp.wasabeef:fresco-processors:2.0.0'
+    implementation 'com.vistrav:ask:2.4'
+
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
